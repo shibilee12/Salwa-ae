@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salwa AE | Enter a New World</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .brand { font-family: 'Playfair Display', serif; }
+
+    /* immersive hero background */
+    .hero-bg {
+      background-image: url('https://images.unsplash.com/photo-1549880338-65ddcdfd017b?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    /* animated overlay */
+    .hero-overlay {
+      background: radial-gradient(circle at top, rgba(0,0,0,0.4), rgba(0,0,0,0.9));
+      animation: pulse 10s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 0.85; }
+      50% { opacity: 1; }
+    }
+
+    /* floating particles */
+    .particle::before {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(212,175,55,0.6);
+      animation: float 12s linear infinite;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-120vh); }
+    }
+
+    .glass {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .gold { color:#d4af37; }
+  </style>
+</head>
+
+<body class="bg-black text-white overflow-x-hidden">
+
+<!-- NAV -->
+<header class="fixed w-full top-0 z-50 bg-black/30 backdrop-blur">
+  <div class="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center">
+    <h1 class="brand text-2xl">Salwa <span class="gold">AE</span></h1>
+    <nav class="hidden md:flex space-x-10 uppercase tracking-widest text-sm">
+      <a href="#studio" class="hover:text-[#d4af37]">Studio</a>
+      <a href="#perfumes" class="hover:text-[#d4af37]">Perfumes</a>
+      <a href="#cafe" class="hover:text-[#d4af37]">Café</a>
+      <a href="#electricals" class="hover:text-[#d4af37]">Electricals</a>
+      <a href="#bookshop" class="hover:text-[#d4af37]">Bookshop</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="relative min-h-screen hero-bg">
+  <div class="absolute inset-0 hero-overlay"></div>
+
+  <!-- particles -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="particle absolute left-1/4 bottom-0"></div>
+    <div class="particle absolute left-1/2 bottom-0"></div>
+    <div class="particle absolute left-3/4 bottom-0"></div>
+  </div>
+
+  <div class="relative z-10 min-h-screen flex items-center justify-center text-center px-6" data-aos="zoom-out">
+    <div>
+      <h2 class="brand text-6xl md:text-7xl mb-6 leading-tight">
+        Enter the World of <span class="gold">Salwa</span>
+      </h2>
+      <p class="text-lg text-gray-200 max-w-2xl mx-auto mb-14">
+        A curated universe of premium experiences, creativity, and excellence.
+      </p>
+      <a href="#businesses" class="px-10 py-4 border border-[#d4af37] rounded-full tracking-widest hover:bg-[#d4af37] hover:text-black transition">
+        STEP INSIDE
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- BUSINESSES -->
+<section id="businesses" class="py-40 bg-gradient-to-b from-black to-[#020617]">
+  <div class="max-w-7xl mx-auto px-6">
+    <h3 class="brand text-4xl text-center mb-24" data-aos="fade-up">Our Realms</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+      <a id="studio" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up"> <h4 class="brand text-2xl mb-3">Salwa Studio</h4><p class="text-gray-300">Where imagination takes form</p></a>
+      <a id="perfumes" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up" data-aos-delay="100"> <h4 class="brand text-2xl mb-3">Salwa Perfumes</h4><p class="text-gray-300">Scented identities</p></a>
+      <a id="cafe" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up" data-aos-delay="200"> <h4 class="brand text-2xl mb-3">Salwa Café</h4><p class="text-gray-300">Moments brewed to perfection</p></a>
+      <a id="electricals" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up" data-aos-delay="300"> <h4 class="brand text-2xl mb-3">Salwa Electricals</h4><p class="text-gray-300">Powering modern life</p></a>
+      <a id="bookshop" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up" data-aos-delay="400"> <h4 class="brand text-2xl mb-3">Salwa Bookshop</h4><p class="text-gray-300">Stories that shape minds</p></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-20 text-center text-gray-400">
+  <p class="brand text-xl text-white mb-3">Salwa AE</p>
+  <p>Not just businesses. A universe.</p>
+  <p class="mt-6 text-sm">© 2026 Salwa AE</p>
+</footer>
+
+<script>
+  AOS.init({ duration: 1400, once: true });
+</script>
+
+</body>
+</html>

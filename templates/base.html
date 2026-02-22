@@ -1,0 +1,15 @@
+<body style="background-image: url('{% static background %}')">
+
+<header>
+  <nav>
+    <a href="{% url 'home' %}">Home</a>
+    <a href="{% url 'business' 'studio' %}">Studio</a>
+    <a href="{% url 'business' 'perfumes' %}">Perfumes</a>
+    <a href="{% url 'business' 'cafe' %}">Cafe</a>
+    <a href="{% url 'business' 'electricals' %}">Electricals</a>
+    <a href="{% url 'business' 'bookshop' %}">Bookshop</a>
+  </nav>
+</header>
+
+{% block content %}{% endblock %}
+</body>
