@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Salwa Studio | Design Intelligence{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --studio-accent: #ffcc00;
+    /* Yellow */
+    --studio-red: #cc0000;
+  }
+
+  .studio-hero {
+    background: #000;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .studio-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('{% static "studio/studio.jpg.jpeg" %}');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3;
+    filter: grayscale(100%);
+  }
+
+  .accent-line {
+    width: 60px;
+    height: 4px;
+    background: var(--studio-accent);
+    margin-bottom: 2rem;
+  }
+
+  .branch-card {
+    background: #111;
+    border: 1px solid #222;
+    padding: 3rem;
+    transition: all 0.4s ease;
+  }
+
+  .branch-card:hover {
+    border-color: var(--studio-accent);
+    transform: translateY(-5px);
+  }
+
+  .service-item {
+    border-left: 2px solid #222;
+    padding-left: 2rem;
+    transition: border-color 0.3s ease;
+  }
+
+  .service-item:hover {
+    border-color: var(--studio-accent);
+  }
+
+  .portfolio-grid img {
+    filter: grayscale(100%);
+    transition: all 0.5s ease;
+  }
+
+  .portfolio-grid img:hover {
+    filter: grayscale(0%);
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 640px) {
+    .branch-card {
+      padding: 1.75rem;
+    }
+
+    .accent-line {
+      width: 44px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="studio-hero">
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="accent-line"></div>
+    <div class="mb-8 flex items-center gap-4">
+      <img src="{% static 'logos/salwastudio.jpeg' %}" alt="Salwa Studio Logo"
+        class="h-20 w-auto rounded-lg shadow-2xl border border-white/10">
+      <div>
+        <p class="text-xs uppercase tracking-[0.5em] text-yellow-500 mb-2">Division 01</p>
+        <h1 class="text-6xl md:text-8xl font-bold uppercase">SALWA STUDIO</h1>
+      </div>
+    </div>
+    <p class="text-xl text-gray-400 max-w-xl mb-12">Engineering digital legacies through advanced design intelligence
+      and creative strategy. Black, white, and bold.</p>
+    <a href="#branches"
+      class="px-10 py-4 bg-white text-black font-bold uppercase tracking-widest text-xs hover:bg-yellow-500 transition">Explore
+      Branches</a>
+  </div>
+</section>
+
+<section id="branches" class="py-24 bg-black">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-4xl font-bold mb-16 brand-font">OUR <span class="text-yellow-500">LOCATIONS</span></h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {% for branch in studio_branches %}
+      <div class="branch-card">
+        <p class="text-yellow-500 font-bold mb-2">0{{ forloop.counter }}</p>
+        <h3 class="text-2xl font-bold mb-4">{{ branch.name }}</h3>
+        <p class="text-gray-500 text-sm mb-8">{{ branch.address }}</p>
+        <a href="{{ branch.enquiry_url }}"
+          class="text-xs uppercase tracking-widest border-b border-yellow-500 pb-1">Enquire Now</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="py-24 bg-[#0a0a0a]">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+    <div>
+      <h2 class="text-4xl font-bold mb-8 brand-font">STUDIO <span class="text-yellow-500">SERVICES</span></h2>
+      <div class="space-y-12">
+        <div class="service-item">
+          <h4 class="text-xl font-bold mb-2 text-white">Brand Intelligence</h4>
+          <p class="text-gray-500">Comprehensive brand strategy, visual identity systems, and tactical market
+            positioning.</p>
+        </div>
+        <div class="service-item">
+          <h4 class="text-xl font-bold mb-2 text-white">Motion & Digital</h4>
+          <p class="text-gray-500">High-performance digital experiences and complex motion graphics for modern
+            interfaces.</p>
+        </div>
+        <div class="service-item">
+          <h4 class="text-xl font-bold mb-2 text-white">Creative Direction</h4>
+          <p class="text-gray-500">End-to-end production management, photography, and cinematic storytelling.</p>
+        </div>
+      </div>
+    </div>
+    <div class="portfolio-grid grid grid-cols-2 gap-4">
+      <div class="overflow-hidden rounded-lg">
+        <img src="{% static 'studio/studio.jpg.jpeg' %}" alt="" class="w-full h-full object-cover aspect-square">
+      </div>
+      <div class="overflow-hidden rounded-lg mt-8">
+        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt=""
+          class="w-full h-full object-cover aspect-square">
+      </div>
+      <div class="overflow-hidden rounded-lg -mt-8">
+        <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=600&q=80" alt=""
+          class="w-full h-full object-cover aspect-square">
+      </div>
+      <div class="overflow-hidden rounded-lg">
+        <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=600&q=80" alt=""
+          class="w-full h-full object-cover aspect-square">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-24 bg-black border-t border-white/5">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <h2 class="text-4xl font-bold mb-8">READY TO CREATE?</h2>
+    <p class="text-gray-400 mb-12">Join the elite list of brands that have transformed their reality through Salwa
+      Studio.</p>
+    <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to start a project with Salwa Studio.'|urlencode }}"
+      class="px-12 py-5 bg-yellow-500 text-black font-bold rounded-full uppercase tracking-tighter hover:scale-105 transition duration-300">Start
+      Project</a>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Elite Split Text for Studio Hero
+  const studioTitle = document.querySelector('.studio-hero h1');
+  if (studioTitle) {
+    const text = studioTitle.innerText;
+    studioTitle.innerHTML = text.split('').map(char => {
+      if (char === ' ') return '<span>&nbsp;</span>';
+      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
+    }).join('');
+
+    gsap.from(studioTitle.querySelectorAll('.char-inner'), {
+      y: "110%",
+      rotationX: -90,
+      opacity: 0,
+      duration: 1.8,
+      stagger: 0.04,
+      ease: "expo.out",
+      delay: 0.5
+    });
+  }
+
+  gsap.from(".accent-line", {
+    width: 0,
+    duration: 1.2,
+    delay: 0.8,
+    ease: "expo.inOut"
+  });
+
+  gsap.from(".studio-hero p", {
+    y: 30,
+    opacity: 0,
+    duration: 1.2,
+    delay: 1.2,
+    ease: "expo.out"
+  });
+
+  // Stagger reveal for branch cards
+  gsap.from(".branch-card", {
+    scrollTrigger: {
+      trigger: "#branches",
+      start: "top 80%"
+    },
+    y: 60,
+    opacity: 0,
+    duration: 1.2,
+    stagger: 0.15,
+    ease: "expo.out"
+  });
+
+  // Service items reveal
+  gsap.from(".service-item", {
+    scrollTrigger: {
+      trigger: ".service-item",
+      start: "top 85%"
+    },
+    x: -30,
+    opacity: 0,
+    duration: 1,
+    stagger: 0.2,
+    ease: "power3.out"
+  });
+
+  // Portfolio images parallax/reveal
+  gsap.utils.toArray('.portfolio-grid div').forEach((imgWrap, i) => {
+    gsap.from(imgWrap, {
+      scrollTrigger: {
+        trigger: imgWrap,
+        start: "top 90%"
+      },
+      y: 50,
+      scale: 0.9,
+      opacity: 0,
+      duration: 1.5,
+      ease: "expo.out",
+      delay: i * 0.1
+    });
+  });
+
+</script>
+{% endblock %}

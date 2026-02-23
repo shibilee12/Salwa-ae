@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Salwa Electricals | Powering Reality{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --elec-blue: #007bff;
+    --elec-dark: #0f172a;
+  }
+
+  body {
+    background-color: var(--elec-dark);
+    color: #f8fafc;
+  }
+
+  .elec-hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at 80% 20%, rgba(0, 123, 255, 0.15), transparent 40%);
+  }
+
+  .tech-border {
+    border: 1px solid rgba(0, 123, 255, 0.2);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+  }
+
+  .tech-border:hover {
+    border-color: var(--elec-blue);
+    box-shadow: 0 0 30px rgba(0, 123, 255, 0.1);
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    box-shadow: 0 0 10px #10b981;
+  }
+
+  @media (max-width: 640px) {
+    .tech-border {
+      backdrop-filter: blur(8px);
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="elec-hero">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+    <div data-aos="fade-right">
+      <img src="{% static 'logos/salwaelectricals.jpeg' %}" alt="Salwa Electricals Logo"
+        class="h-20 w-auto rounded-lg shadow-2xl mb-8 border border-blue-500/10">
+      <div class="flex items-center mb-6">
+        <span class="status-dot"></span>
+        <span class="text-xs uppercase tracking-[0.3em] text-blue-400">Division 05 / Active</span>
+      </div>
+      <h1 class="text-6xl md:text-7xl font-bold mb-6 brand-font uppercase">SALWA ELECTRICALS</h1>
+      <p class="text-lg text-slate-400 max-w-lg mb-10">Advanced electrical engineering and smart infrastructure
+        solutions for the next generation.</p>
+      <a href="#services"
+        class="px-10 py-4 bg-blue-600 text-white font-bold rounded-lg uppercase text-xs tracking-widest hover:bg-blue-700 transition inline-block">Explore
+        Solutions</a>
+    </div>
+    <div class="relative" data-aos="fade-left">
+      <div class="tech-border p-8 rounded-2xl">
+        <div class="flex justify-between items-center mb-12">
+          <span class="text-xs font-mono opacity-50">SYSTEM_OS_V2.0</span>
+          <span class="text-xs font-mono text-blue-500">ENERGIZED</span>
+        </div>
+        <div class="space-y-6">
+          <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
+            <span class="text-sm">Grid Stability</span>
+            <span class="text-sm font-mono text-green-400">99.9%</span>
+          </div>
+          <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
+            <span class="text-sm">Smart Integration</span>
+            <span class="text-sm font-mono text-blue-400">ONLINE</span>
+          </div>
+          <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
+            <span class="text-sm">Safety Protocols</span>
+            <span class="text-sm font-mono text-blue-400">ACTIVE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="py-24 bg-[#0a0f1d]">
+  <div class="max-w-7xl mx-auto px-6">
+    <h2 class="text-4xl font-bold mb-16 brand-font">CORE <span class="text-blue-500">CAPABILITIES</span></h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="tech-border p-10 rounded-2xl" data-aos="fade-up">
+        <svg class="w-12 h-12 text-blue-500 mb-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <h3 class="text-2xl font-bold mb-4">Phase Mgmt</h3>
+        <p class="text-slate-400 text-sm">Industrial-grade phase balancing and load management for high-demand
+          infrastructures.</p>
+      </div>
+      <div class="tech-border p-10 rounded-2xl" data-aos="fade-up" data-aos-delay="100">
+        <svg class="w-12 h-12 text-blue-500 mb-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        <h3 class="text-2xl font-bold mb-4">Safety Systems</h3>
+        <p class="text-slate-400 text-sm">Advanced surge protection, safety audits, and automated emergency cutoff
+          systems.</p>
+      </div>
+      <div class="tech-border p-10 rounded-2xl" data-aos="fade-up" data-aos-delay="200">
+        <svg class="w-12 h-12 text-blue-500 mb-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <h3 class="text-2xl font-bold mb-4">Smart Connect</h3>
+        <p class="text-slate-400 text-sm">End-to-end building automation and IoT integration for intelligent living
+          spaces.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-24 bg-blue-600">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12">
+    <h2 class="text-4xl md:text-5xl font-bold text-white brand-font">READY TO POWER<br>YOUR VISION?</h2>
+    <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to enquire about Salwa Electricals services.'|urlencode }}"
+      class="px-12 py-5 bg-white text-blue-600 font-bold rounded-lg uppercase tracking-widest hover:bg-slate-100 transition shadow-xl">Start
+      Enquiry</a>
+  </div>
+</section>
+{% block extra_js %}
+<script>
+  // Elite Split Text for Electricals Hero
+  const techTitle = document.querySelector('.elec-hero h1');
+  if (techTitle) {
+    const text = techTitle.innerText;
+    techTitle.innerHTML = text.split('').map(char => {
+      if (char === ' ') return '<span>&nbsp;</span>';
+      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
+    }).join('');
+
+    gsap.from(techTitle.querySelectorAll('.char-inner'), {
+      y: "110%",
+      rotationX: -90,
+      opacity: 0,
+      duration: 1.8,
+      stagger: 0.04,
+      ease: "expo.out",
+      delay: 0.5
+    });
+  }
+
+  gsap.from(".elec-hero p", {
+    y: 30,
+    opacity: 0,
+    duration: 1.2,
+    delay: 1.2,
+    ease: "expo.out"
+  });
+
+  // Tech Interface Reveal
+  gsap.from(".tech-border", {
+    scrollTrigger: {
+      trigger: ".elec-hero",
+      start: "top center"
+    },
+    scale: 0.95,
+    opacity: 0,
+    duration: 1.5,
+    ease: "expo.out",
+    delay: 0.8
+  });
+
+  // Stagger reveal for capability cards
+  gsap.from("#services .tech-border", {
+    scrollTrigger: {
+      trigger: "#services",
+      start: "top 85%"
+    },
+    y: 60,
+    opacity: 0,
+    duration: 1.2,
+    stagger: 0.2,
+    ease: "expo.out"
+  });
+
+</script>
+{% endblock %}
