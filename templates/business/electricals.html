@@ -138,8 +138,19 @@
       Enquiry</a>
   </div>
 </section>
+</section>
+{% endblock %}
+
 {% block extra_js %}
 <script>
+  // Initialize AOS if needed (though project uses GSAP mostly)
+  if (typeof AOS !== 'undefined') {
+    AOS.init({
+      duration: 1000,
+      once: true
+    });
+  }
+
   // Elite Split Text for Electricals Hero
   const techTitle = document.querySelector('.elec-hero h1');
   if (techTitle) {
