@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Salwa Perfumes | Reality of Scent{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --perfume-gold: #d4af37;
+    --perfume-cream: #fffaf0;
+  }
+
+  body {
+    background-color: var(--perfume-cream);
+    color: #1a1a1a;
+  }
+
+  .perfume-hero {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(rgba(255, 250, 240, 0.8), rgba(255, 250, 240, 0.8)), url('https://images.unsplash.com/photo-1595428774223-ef0c3777c0f1?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+  }
+
+  .gold-accent {
+    color: var(--perfume-gold);
+  }
+
+  .bio-section {
+    background: #fff;
+    padding: 5rem 2rem;
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+    margin-top: -100px;
+    position: relative;
+    z-index: 10;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+  }
+
+  .scent-grid img {
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: grayscale(100%) sepia(20%);
+  }
+
+  .scent-grid img:hover {
+    transform: scale(1.02);
+    filter: grayscale(0%) sepia(0%);
+  }
+
+  .luxury-button {
+    display: inline-block;
+    padding: 1.2rem 3rem;
+    border: 1px solid var(--perfume-gold);
+    color: var(--perfume-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    font-size: 0.75rem;
+    transition: all 0.3s ease;
+    border-radius: 0;
+  }
+
+  .luxury-button:hover {
+    background: var(--perfume-gold);
+    color: white;
+  }
+
+  @media (max-width: 640px) {
+    .bio-section {
+      padding: 2.5rem 1.25rem;
+      border-radius: 28px;
+      margin-top: -70px;
+    }
+
+    .luxury-button {
+      padding: 1rem 2.25rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="perfume-hero">
+  <div class="max-w-7xl mx-auto px-6" data-aos="fade-up">
+    <p class="text-xs uppercase tracking-[0.6em] gold-accent mb-4">Division 02</p>
+    <h1 class="text-6xl md:text-8xl font-bold mb-8 brand-font">SALWA<br><span class="gold-accent">PERFUMES</span></h1>
+    <p class="text-xl max-w-2xl mx-auto italic opacity-70">"The reality of a memory is woven through the air you
+      breathe."</p>
+  </div>
+</section>
+
+<section class="pb-24 px-6 bg-[#faf9f6]">
+  <div class="max-w-4xl mx-auto bio-section" data-aos="fade-up">
+    <h2 class="text-3xl font-bold mb-10 text-center brand-font">THE <span class="gold-accent">OLFACTORY</span> LEGACY
+    </h2>
+    <div class="prose prose-lg mx-auto text-gray-600 leading-relaxed font-light">
+      <p class="mb-6">Salwa Perfumes represents the pinnacle of Arabian craftsmanship merged with contemporary French
+        sophistication. Each bottle is a curated reality, containing hand-sourced ingredients from the peaks of Taif to
+        the valleys of Grasse.</p>
+      <p>Our philosophy is simple: Scent is not an accessory; it is an atmosphere. It is the invisible architecture that
+        defines a room before a single word is spoken. Experience the reality of our signature blends.</p>
+    </div>
+    <div class="mt-12 text-center">
+      <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to explore the Salwa Perfume collection.'|urlencode }}"
+        class="luxury-button">Explore Collection</a>
+    </div>
+  </div>
+</section>
+
+<section class="py-24 max-w-7xl mx-auto px-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 scent-grid">
+    <div class="space-y-4" data-aos="fade-up">
+      <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80"
+        alt="Perfume 1" class="rounded-lg shadow-lg">
+      <h4 class="font-bold text-center">Midnight Oud</h4>
+    </div>
+    <div class="space-y-4 pt-12" data-aos="fade-up" data-aos-delay="100">
+      <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=600&q=80"
+        alt="Perfume 2" class="rounded-lg shadow-lg">
+      <h4 class="font-bold text-center">Desert Rose</h4>
+    </div>
+    <div class="space-y-4" data-aos="fade-up" data-aos-delay="200">
+      <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80"
+        alt="Perfume 3" class="rounded-lg shadow-lg">
+      <h4 class="font-bold text-center">Silk Route</h4>
+    </div>
+  </div>
+</section>
+
+<section class="py-24 bg-white border-t border-gray-100">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <h2 class="text-4xl font-bold mb-8 brand-font">BEYOND <span class="gold-accent">FRAGRANCE</span></h2>
+    <p class="text-gray-500 mb-12">Visit our flagship boutique for a private consultation and personalized scent
+      layering session.</p>
+    <a href="{{ salwa_location_url }}" class="luxury-button">Find Boutique</a>
+  </div>
+</section>
+
+{% block extra_js %}
+<script>
+  // Elite Split Text for Perfumes Hero
+  const perfumeTitle = document.querySelector('.perfume-hero h1');
+  if (perfumeTitle) {
+    const text = perfumeTitle.innerText;
+    perfumeTitle.innerHTML = text.split('').map(char => {
+      if (char === ' ') return '<span>&nbsp;</span>';
+      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
+    }).join('');
+
+    gsap.from(perfumeTitle.querySelectorAll('.char-inner'), {
+      y: "110%",
+      rotationX: -90,
+      opacity: 0,
+      duration: 1.8,
+      stagger: 0.04,
+      ease: "expo.out",
+      delay: 0.5
+    });
+  }
+
+  gsap.from(".perfume-hero p", {
+    y: 30,
+    opacity: 0,
+    duration: 1.2,
+    delay: 1.2,
+    ease: "expo.out"
+  });
+
+  // Legacy section reveal
+  gsap.from(".bio-section", {
+    scrollTrigger: {
+      trigger: ".bio-section",
+      start: "top 80%"
+    },
+    y: 100,
+    opacity: 0,
+    duration: 1.5,
+    ease: "expo.out"
+  });
+
+  // Scent cards stagger
+  gsap.from(".scent-grid > div", {
+    scrollTrigger: {
+      trigger: ".scent-grid",
+      start: "top 85%"
+    },
+    y: 60,
+    opacity: 0,
+    duration: 1.2,
+    stagger: 0.2,
+    ease: "expo.out"
+  });
+
+</script>
+{% endblock %}

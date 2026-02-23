@@ -58,13 +58,14 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
+'OPTIONS': {
+        'context_processors': [
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
+            'salwa.context_processors.salwa_site_config',
+        ],
+    },
     },
 ]
 
@@ -126,3 +127,10 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- Salwa site contact & social (update with real values) ---
+CONTACT_WHATSAPP_NUMBER = os.environ.get('SALWA_WHATSAPP', '971501234567')  # UAE format, no +
+CONTACT_WHATSAPP_DEFAULT_MSG = 'Hello, I would like to enquire about Salwa.'
+SOCIAL_INSTAGRAM = os.environ.get('SALWA_INSTAGRAM', 'https://instagram.com/salwauae')
+SOCIAL_FACEBOOK = os.environ.get('SALWA_FACEBOOK', '')
+SOCIAL_LINKEDIN = os.environ.get('SALWA_LINKEDIN', '')

@@ -1,15 +1,920 @@
-<body style="background-image: url('{% static background %}')">
+<!DOCTYPE html>
+<html lang="en">
 
-<header>
-  <nav>
-    <a href="{% url 'home' %}">Home</a>
-    <a href="{% url 'business' 'studio' %}">Studio</a>
-    <a href="{% url 'business' 'perfumes' %}">Perfumes</a>
-    <a href="{% url 'business' 'cafe' %}">Cafe</a>
-    <a href="{% url 'business' 'electricals' %}">Electricals</a>
-    <a href="{% url 'business' 'bookshop' %}">Bookshop</a>
-  </nav>
-</header>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Salwa AE | Feel the Reality{% endblock %}</title>
+  {% load static %}
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
 
-{% block content %}{% endblock %}
+  <!-- GSAP for Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <!-- Three.js for God-Tier WebGL -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Tailwind (Optional but using for layout utilities) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --salwa-gold: #d4af37;
+      --salwa-black: #0b0b0b;
+      --salwa-white: #f8f8f8;
+      --salwa-studio-yellow: #ffcc00;
+      --salwa-studio-red: #cc0000;
+      --salwa-cafe-pink: #ff1493;
+      --salwa-bookshop-green: #004d40;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--salwa-black);
+      color: var(--salwa-white);
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* Global Background System - God-Tier Integration */
+    .bg-system {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      pointer-events: none;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.4;
+    }
+
+    .bg-aurora {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      filter: blur(150px);
+      opacity: 0.1;
+    }
+
+    /* Film Grain Overlay */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      background-image: url("https://upload.wikimedia.org/wikipedia/commons/7/76/1k_p_Noisey_Texture.png");
+      opacity: 0.03;
+      mix-blend-mode: overlay;
+    }
+
+    /* Cinematic Preloader (The "Opening") */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+      pointer-events: all;
+    }
+
+    .preloader-curtain {
+      position: absolute;
+      inset: 0;
+      display: flex;
+    }
+
+    .curtain-panel {
+      flex: 1;
+      height: 100%;
+      background: #000;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .preloader-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    .brand-font {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .premium-nav {
+      background: rgba(8, 8, 8, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      padding: 0.5rem 0;
+    }
+
+    .premium-nav.scrolled {
+      background: rgba(0, 0, 0, 0.95);
+      padding: 0.25rem 0;
+      border-bottom: 1px solid var(--salwa-gold);
+    }
+
+    /* Luxury Logo Glow */
+    .logo-container {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-glow {
+      position: absolute;
+      inset: -10px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
+      filter: blur(15px);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .logo-container:hover .logo-glow {
+      opacity: 1;
+    }
+
+    .logo-img {
+      height: clamp(32px, 5vw, 48px);
+      width: auto;
+      filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+      transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .logo-container:hover .logo-img {
+      transform: scale(1.05) rotate(-2deg);
+    }
+
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      text-transform: uppercase;
+      color: white;
+    }
+
+    .nav-link {
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.6);
+      transition: all 0.4s ease;
+      text-decoration: none;
+      padding: 0.5rem 0;
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--salwa-gold);
+      transition: width 0.4s ease;
+    }
+
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: white;
+    }
+
+    .footer {
+      background: #000;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 4rem 1rem;
+      margin-top: 4rem;
+    }
+
+    /* Hero text reveal animation utility */
+    .reveal-text {
+      overflow: hidden;
+    }
+
+    .reveal-text span {
+      display: inline-block;
+      transform: translateY(100%);
+    }
+
+    /* Imperial Mega Menu Overlay */
+    #imperial-menu {
+      position: fixed;
+      inset: 0;
+      background: #050505;
+      z-index: 9998;
+      display: flex;
+      opacity: 0;
+      visibility: hidden;
+      clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+      transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    #imperial-menu.active {
+      opacity: 1;
+      visibility: visible;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .menu-container {
+      width: 100%;
+      max-width: 1400px;
+      margin: auto;
+      padding: 4rem 2rem;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 4rem;
+    }
+
+    .menu-column {
+      grid-column: span 3;
+    }
+
+    .menu-featured {
+      grid-column: span 6;
+      border-left: 1px solid rgba(255, 255, 255, 0.05);
+      padding-left: 4rem;
+    }
+
+    .menu-item {
+      display: block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.4);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      transition: all 0.4s ease;
+    }
+
+    .menu-item:hover {
+      color: var(--salwa-gold);
+      transform: translateX(10px);
+    }
+
+    .menu-title {
+      font-size: 0.65rem;
+      letter-spacing: 0.5em;
+      color: var(--salwa-gold);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .menu-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(212, 175, 55, 0.2);
+    }
+
+    .featured-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      background: #111;
+    }
+
+    .featured-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.6;
+      transition: transform 1s ease;
+    }
+
+    .featured-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .featured-content {
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      right: 2rem;
+    }
+
+    .menu-close {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      color: white;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+
+    .menu-close:hover {
+      border-color: var(--salwa-gold);
+      color: var(--salwa-gold);
+      transform: rotate(90deg);
+    }
+
+    @media (max-width: 1024px) {
+      .menu-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .menu-column,
+      .menu-featured {
+        grid-column: span 1;
+        padding: 0;
+        border: 0;
+      }
+    }
+
+
+
+    /* Animated Noise Overlay */
+    .noise-overlay {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      right: -50%;
+      bottom: -50%;
+      width: 200%;
+      height: 200%;
+      background: transparent url('http://assets.iceablethemes.com/img/noise-transparent.png') repeat 0 0;
+      background-repeat: repeat;
+      animation: noise 0.2s infinite;
+      opacity: .05;
+      visibility: visible;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    @keyframes noise {
+      0% {
+        transform: translate(0, 0)
+      }
+
+      10% {
+        transform: translate(-5%, -5%)
+      }
+
+      20% {
+        transform: translate(-10%, 5%)
+      }
+
+      30% {
+        transform: translate(5%, -10%)
+      }
+
+      40% {
+        transform: translate(-5%, 15%)
+      }
+
+      50% {
+        transform: translate(-10%, 5%)
+      }
+
+      60% {
+        transform: translate(15%, 0)
+      }
+
+      70% {
+        transform: translate(0, 10%)
+      }
+
+      80% {
+        transform: translate(-15%, 0)
+      }
+
+      90% {
+        transform: translate(10%, 5%)
+      }
+
+      100% {
+        transform: translate(5%, 0)
+      }
+    }
+
+    .loader-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.5em;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .loader-bar-container {
+      width: 200px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      margin-top: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loader-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--salwa-gold);
+      transform: translateX(-100%);
+    }
+  </style>
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.34/dist/lenis.min.js"></script>
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %} overflow-hidden">
+  <!-- Global Background Layers -->
+  <div class="bg-system">
+    <canvas id="webgl-canvas"></canvas>
+    <div class="noise-overlay"></div>
+    <div class="film-grain"></div>
+    <div class="bg-aurora">
+      <div class="aurora-sphere"
+        style="width: 80vw; height: 80vh; background: var(--salwa-gold); top: -20%; left: -10%;"></div>
+      <div class="aurora-sphere" style="width: 60vw; height: 60vh; background: #333; bottom: -10%; right: -10%;"></div>
+    </div>
+  </div>
+
+  <!-- SVG Liquid Filters Container -->
+  <svg class="hidden">
+    <defs>
+      <filter id="liquid-filter">
+        <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="50" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- God-Tier Status Bar -->
+  <div class="fixed left-6 bottom-12 z-[1001] hidden lg:flex flex-col items-center gap-6 pointer-events-none">
+    <div class="w-px h-32 bg-white/10 relative overflow-hidden">
+      <div id="status-progress" class="absolute top-0 left-0 w-full bg-gold h-0 transition-all duration-300"></div>
+    </div>
+    <span
+      class="text-[0.6rem] uppercase tracking-[0.5em] rotate-90 origin-center translate-y-8 text-white/40 whitespace-nowrap">Salwa
+      Status: Operational</span>
+  </div>
+
+  <!-- Cinematic Preloader -->
+  <div id="preloader">
+    <div class="preloader-curtain">
+      <div class="curtain-panel"></div>
+      <div class="curtain-panel"></div>
+      <div class="curtain-panel"></div>
+      <div class="curtain-panel"></div>
+    </div>
+    <div class="preloader-content">
+      <div class="loader-logo mb-4">SALWA <span style="color: var(--salwa-gold)">UAE</span></div>
+      <div class="text-[0.6rem] uppercase tracking-[1em] text-gray-500 loading-text">Initializing Reality</div>
+      <div class="loader-bar-container">
+        <div class="loader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <header class="premium-nav">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="{% url 'home' %}" class="logo-container group" id="logo-wrap">
+        <div class="logo-glow"></div>
+        <!-- Logo Image (Hidden until loaded, if provided) -->
+        <img src="{% static 'logos/logo.png' %}" alt="Salwa AE" class="logo-img hidden"
+          onload="this.classList.remove('hidden'); document.getElementById('logo-wrap').querySelector('.logo-fallback').classList.add('hidden');">
+
+        <!-- Premium Fallback Logo -->
+        <div class="logo-fallback flex flex-col leading-none">
+          <span class="logo-text">SALWA <span style="color: var(--salwa-gold)">UAE</span></span>
+          <span class="text-[0.5rem] tracking-[0.8em] opacity-40 mt-1.5 uppercase font-medium">Feel the Reality</span>
+        </div>
+      </a>
+      <nav class="hidden md:flex space-x-12 items-center">
+        <a href="{% url 'home' %}" class="nav-link">Overview</a>
+        <a href="{% url 'careers' %}" class="nav-link">Join Us</a>
+        <button id="desktop-menu-toggle" class="group flex items-center gap-4 text-white focus:outline-none">
+          <span class="text-xs uppercase tracking-[0.4em] group-hover:text-[#d4af37] transition-colors">Menu</span>
+          <div class="flex flex-col gap-1.5">
+            <span class="w-10 h-px bg-white group-hover:bg-[#d4af37] transition-all"></span>
+            <span class="w-6 h-px bg-white group-hover:bg-[#d4af37] transition-all self-end"></span>
+          </div>
+        </button>
+      </nav>
+      <div class="md:hidden">
+        <button id="mobile-menu-toggle-v2" class="text-white hover:text-[#d4af37] transition-colors p-2">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 8h16M4 16h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Imperial Mega Menu -->
+  <div id="imperial-menu">
+    <button class="menu-close" id="menu-close-btn">✕</button>
+    <div class="menu-container">
+      <div class="menu-column">
+        <div class="menu-title">Propelling Reality</div>
+        <a href="{% url 'business' 'studio' %}" class="menu-item" data-text="Studio">Studio</a>
+        <a href="{% url 'business' 'cafe' %}" class="menu-item" data-text="Cafe">Cafe</a>
+        <a href="{% url 'business' 'bookshop' %}" class="menu-item" data-text="Bookshop">Bookshop</a>
+        <a href="{% url 'business' 'perfumes' %}" class="menu-item" data-text="Perfumes">Perfumes</a>
+        <a href="{% url 'business' 'electricals' %}" class="menu-item" data-text="Electricals">Electricals</a>
+      </div>
+      <div class="menu-column">
+        <div class="menu-title">Ecosystem</div>
+        <a href="{% url 'about' %}" class="menu-item" data-text="About">About Us</a>
+        <a href="{% url 'careers' %}" class="menu-item" data-text="Careers">Careers</a>
+        <a href="{% url 'contact' %}" class="menu-item" data-text="Contact">Contact</a>
+      </div>
+      <div class="menu-featured">
+        <div class="menu-title">Direct Enquiries</div>
+        <div class="featured-card group">
+          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+            alt="Salwa Group HQ">
+          <div class="featured-content">
+            <h4 class="text-2xl font-bold mb-2">Salwa Group HQ</h4>
+            <p class="text-sm text-gray-400 mb-6">Experience the pinnacle of UAE's diversified landscape.</p>
+            <a href="{% url 'contact' %}" class="luxury-btn">Start Enquiry</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="pt-20">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div class="col-span-1 md:col-span-2">
+        <h3 class="text-2xl font-bold mb-4 brand-font">SALWA <span style="color: var(--salwa-gold)">GROUP</span></h3>
+        <p class="text-gray-400 max-w-sm mb-6">Experience the reality of excellence across our diverse business
+          divisions. From creative studios to aromatic perfumes, we define luxury.</p>
+        <div class="flex space-x-4">
+          <!-- Social Icons -->
+          <a href="{% if salwa_instagram %}{{ salwa_instagram }}{% else %}#{% endif %}" target="_blank" rel="noopener"
+            class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6" fill="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.058-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+            </svg></a>
+          <a href="{% if salwa_facebook %}{{ salwa_facebook }}{% else %}#{% endif %}" target="_blank" rel="noopener"
+            class="text-gray-400 hover:text-white transition"><svg class="w-6 h-6" fill="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+            </svg></a>
+          {% if salwa_linkedin %}
+          <a href="{{ salwa_linkedin }}" target="_blank" rel="noopener"
+            class="text-gray-400 hover:text-white transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0zM7.09 20.45H3.56V9h3.53v11.45zM5.33 7.43c-1.13 0-2.05-.92-2.05-2.05S4.2 3.33 5.33 3.33s2.05.92 2.05 2.05-.92 2.05-2.05 2.05zM20.45 20.45h-3.53v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.95v5.66H9.41V9h3.39v1.56h.05c.47-.9 1.62-1.85 3.33-1.85 3.56 0 4.22 2.34 4.22 5.39v6.35z" />
+            </svg>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      <div>
+        <h4 class="font-bold mb-4 uppercase text-sm tracking-widest text-[#d4af37]">Divisions</h4>
+        <ul class="space-y-2 text-gray-400 text-sm">
+          <li><a href="{% url 'business' 'studio' %}" class="hover:text-white transition">Salwa Studio</a></li>
+          <li><a href="{% url 'business' 'cafe' %}" class="hover:text-white transition">Salwa Cafe</a></li>
+          <li><a href="{% url 'business' 'bookshop' %}" class="hover:text-white transition">Salwa Bookshop</a></li>
+          <li><a href="{% url 'business' 'perfumes' %}" class="hover:text-white transition">Salwa Perfumes</a></li>
+          <li><a href="{% url 'business' 'electricals' %}" class="hover:text-white transition">Salwa Electricals</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold mb-4 uppercase text-sm tracking-widest text-[#d4af37]">Contact</h4>
+        <ul class="space-y-2 text-gray-400 text-sm">
+          <li>Dubai, UAE</li>
+          {% if salwa_whatsapp_number %}
+          <li><a href="{{ salwa_whatsapp_url }}" target="_blank" rel="noopener"
+              class="hover:text-white transition">WhatsApp: +{{ salwa_whatsapp_number }}</a></li>
+          {% endif %}
+          <li>info@salwauae.com</li>
+        </ul>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-white/5 text-center text-gray-600 text-xs">
+      &copy; 2026 SALWA GROUP. ALL RIGHTS RESERVED. FEEL THE REALITY.
+    </div>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Elite Animation Utilities
+    const ScrambleText = {
+      chars: 'ABCDEFHIJKLMNOPQRSTUVWXYZ1234567890@#$%&',
+      scramble(el, text, duration = 1.5) {
+        if (!el || !text) return;
+        let iteration = 0;
+        const interval = setInterval(() => {
+          el.innerText = text.split("").map((letter, index) => {
+            if (index < iteration) return text[index];
+            return this.chars[Math.floor(Math.random() * this.chars.length)];
+          }).join("");
+          if (iteration >= text.length) clearInterval(interval);
+          iteration += text.length / (duration * 60);
+        }, 30);
+      }
+    };
+
+    // Cinematic Preloader Reveal
+    window.addEventListener('load', () => {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          document.getElementById('preloader').style.display = 'none';
+          document.body.classList.remove('overflow-hidden');
+          ScrollTrigger.refresh();
+        }
+      });
+
+      // Imperial-Grade Reveal Timeline
+      tl.to('.loader-bar', {
+        x: '0%',
+        duration: 1.2,
+        ease: 'power4.inOut'
+      })
+        .to('.loading-text', {
+          opacity: 0,
+          y: -10,
+          duration: 0.4,
+          ease: 'power2.in'
+        }, "-=0.2")
+        .to('.loader-logo', {
+          opacity: 1,
+          scale: 1.05,
+          duration: 0.8,
+          ease: 'expo.out'
+        }, "-=0.1")
+        .to('.preloader-content', {
+          opacity: 0,
+          scale: 1.15,
+          filter: 'blur(20px)',
+          duration: 1,
+          ease: 'expo.inOut'
+        }, "+=0.2")
+        .to('.curtain-panel', {
+          scaleY: 0,
+          duration: 1.4,
+          stagger: {
+            each: 0.12,
+            from: "center"
+          },
+          ease: 'expo.inOut',
+          transformOrigin: 'top'
+        }, "-=0.6")
+        .from('.premium-nav', {
+          y: -100,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'expo.out'
+        }, "-=0.8")
+        .from('main', {
+          opacity: 0,
+          y: 30,
+          duration: 1.5,
+          ease: 'expo.out'
+        }, "-=1");
+
+      // Hero Scramble Effect
+      if (typeof ScrambleText !== 'undefined') {
+        const title = document.querySelector('.hero-title');
+        if (title) ScrambleText.scramble(title, title.innerText);
+      }
+    });
+
+    // Safety Timeout
+    setTimeout(() => {
+      if (document.getElementById('preloader') && document.getElementById('preloader').style.display !== 'none') {
+        document.getElementById('preloader').style.display = 'none';
+        document.body.classList.remove('overflow-hidden');
+      }
+    }, 5000);
+
+    // Elite Aurora Drift
+    gsap.set('.aurora-sphere', { opacity: 0 });
+    gsap.to('.aurora-sphere', {
+      opacity: 0.15,
+      duration: 3,
+      delay: 2,
+      ease: "power2.inOut"
+    });
+
+    gsap.to('.aurora-sphere', {
+      x: "random(-15, 15)vw",
+      y: "random(-15, 15)vh",
+      rotation: "random(-20, 20)",
+      duration: "random(15, 25)",
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    });
+
+    // Standard scroll behavior
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    // Sync Lenis with ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000);
+    });
+
+    gsap.ticker.lagSmoothing(0);
+
+    // God-Tier WebGL Particle Sea
+    const canvas = document.getElementById('webgl-canvas');
+    if (canvas) {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 2000;
+      const posArray = new Float32Array(particlesCount * 3);
+
+      for (let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 10;
+      }
+
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      const material = new THREE.PointsMaterial({
+        size: 0.015,
+        color: 0xd4af37,
+        transparent: true,
+        opacity: 0.4
+      });
+
+      const particlesMesh = new THREE.Points(particlesGeometry, material);
+      scene.add(particlesMesh);
+      camera.position.z = 3;
+
+      let mouseX = 0, mouseY = 0;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth) - 0.5;
+        mouseY = (e.clientY / window.innerHeight) - 0.5;
+      });
+
+      function animateWebGL() {
+        requestAnimationFrame(animateWebGL);
+        particlesMesh.rotation.y += 0.001;
+        particlesMesh.rotation.x += (mouseY * 0.1 - particlesMesh.rotation.x) * 0.05;
+        particlesMesh.rotation.y += (mouseX * 0.1 - particlesMesh.rotation.y) * 0.05;
+        renderer.render(scene, camera);
+      }
+      animateWebGL();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    // Status Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      const prog = document.getElementById("status-progress");
+      if (prog) prog.style.height = scrolled + "%";
+    });
+
+    // Header Scroll Logic
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('.premium-nav');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Imperial Mega Menu Logic
+    const menu = document.getElementById('imperial-menu');
+    const toggles = [
+      document.getElementById('desktop-menu-toggle'),
+      document.getElementById('mobile-menu-toggle-v2')
+    ];
+    const close = document.getElementById('menu-close-btn');
+    const menuItems = document.querySelectorAll('.menu-item');
+    const menuColumns = document.querySelectorAll('.menu-column, .menu-featured');
+
+    function openMenu() {
+      if (!menu) return;
+      menu.classList.add('active');
+      document.body.classList.add('overflow-hidden');
+
+      // Reset positions
+      gsap.set(menuColumns, { y: 50, opacity: 0 });
+      gsap.set(menuItems, { x: -20, opacity: 0 });
+
+      const tl = gsap.timeline({ delay: 0.5 });
+      tl.to(menuColumns, {
+        y: 0,
+        opacity: 1,
+        stagger: 0.1,
+        duration: 1,
+        ease: 'expo.out'
+      })
+        .to(menuItems, {
+          x: 0,
+          opacity: 1,
+          stagger: 0.03,
+          duration: 0.8,
+          ease: 'power2.out'
+        }, "-=0.6");
+    }
+
+    function closeMenu() {
+      if (!menu) return;
+      menu.classList.remove('active');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    toggles.forEach(toggle => {
+      if (toggle) toggle.addEventListener('click', openMenu);
+    });
+
+    if (close) close.addEventListener('click', closeMenu);
+
+    menuItems.forEach(link => {
+      link.addEventListener('click', closeMenu);
+      link.addEventListener('mouseenter', (e) => {
+        if (typeof ScrambleText !== 'undefined') {
+          ScrambleText.scramble(e.target, e.target.getAttribute('data-text'), 0.8);
+        }
+      });
+    });
+  </script>
+  {% block extra_js %}{% endblock %}
 </body>
+
+</html>

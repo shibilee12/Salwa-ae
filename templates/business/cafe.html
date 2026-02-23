@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Salwa Café | Taste the Reality{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --cafe-pink: #ff1493;
+    --cafe-black: #0b0b0b;
+  }
+
+  body {
+    background-color: var(--cafe-black);
+    color: white;
+  }
+
+  .cafe-hero {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1501339819302-ee44772b347f?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .cafe-title {
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+  }
+
+  .pink-glow {
+    color: var(--cafe-pink);
+    text-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
+  }
+
+  .menu-container {
+    background: #111;
+    border: 1px solid rgba(255, 20, 147, 0.2);
+    border-radius: 30px;
+    overflow: hidden;
+    height: min(820px, 75dvh);
+    position: relative;
+  }
+
+  .delivery-card {
+    background: linear-gradient(135deg, #111, #1a1a1a);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 3rem;
+    border-radius: 20px;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
+
+  .delivery-card:hover {
+    border-color: var(--cafe-pink);
+  }
+
+  .pink-button {
+    background-color: var(--cafe-pink);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 99px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+
+  .pink-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255, 20, 147, 0.4);
+  }
+
+  @media (max-width: 640px) {
+    .menu-container {
+      border-radius: 22px;
+      height: 72dvh;
+    }
+
+    .delivery-card {
+      padding: 1.75rem;
+      border-radius: 18px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="cafe-hero">
+  <div class="text-center" data-aos="zoom-out" data-aos-duration="1500">
+    <div class="mb-8 flex flex-col items-center gap-6">
+      <img src="{% static 'logos/salwacafe.jpeg' %}" alt="Salwa Cafe Logo"
+        class="h-24 w-auto rounded-full shadow-2xl border-2 border-pink-500/20">
+      <h1 class="cafe-title uppercase">SALWA CAFÉ</h1>
+    </div>
+    <p class="text-xl max-w-lg mx-auto mb-10 font-light opacity-80">A curated sanctuary where luxury gastronomy meets
+      futuristic social intelligence.</p>
+    <a href="#menu" class="pink-button">View Menu</a>
+  </div>
+</section>
+
+<section id="menu" class="py-24 max-w-7xl mx-auto px-6">
+  <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+    <div>
+      <h2 class="text-5xl font-bold brand-font">THE <span class="pink-glow">MENU</span></h2>
+      <p class="text-gray-400 mt-4">Explore our selection of signature brews and gourmet delicacies.</p>
+    </div>
+    <a href="{% url 'cafe_menu_pdf' %}" download
+      class="text-xs uppercase tracking-widest border-b border-pink-500 pb-1 hover:text-pink-500 transition">Download
+      PDF Menu</a>
+  </div>
+
+  <div class="menu-container shadow-2xl" data-aos="fade-up">
+    <iframe src="{% url 'cafe_menu_pdf' %}" class="w-full h-full border-none"></iframe>
+  </div>
+</section>
+
+<section class="py-24 bg-[#0a0a0a]">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+    <div class="delivery-card" data-aos="fade-right">
+      <div class="w-20 h-20 bg-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      <h3 class="text-2xl font-bold mb-4">FREE DELIVERY</h3>
+      <p class="text-gray-400 mb-8">Experience Salwa Café at your doorstep. We offer complimentary delivery across major
+        UAE locations for all orders over AED 100.</p>
+      <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to order from Salwa Cafe.'|urlencode }}"
+        class="pink-button text-xs">Order Now</a>
+    </div>
+
+    <div class="delivery-card" data-aos="fade-left">
+      <div class="w-20 h-20 bg-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
+          </path>
+        </svg>
+      </div>
+      <h3 class="text-2xl font-bold mb-4">GOOGLE REVIEWS</h3>
+      <p class="text-gray-400 mb-8">Join thousands of satisfied guests who have experienced our sanctuary. Rated 4.8/5
+        by the community.</p>
+      <a href="#" class="text-xs uppercase tracking-widest border-b border-pink-500 pb-1">View on Google Maps</a>
+    </div>
+  </div>
+</section>
+
+<section class="py-24 bg-black border-t border-white/5">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <h2 class="text-4xl font-bold mb-8">PRIVATE EVENTS</h2>
+    <p class="text-gray-400 mb-12">Host your next corporate meeting or intimate gathering in our high-tech sanctuary. We
+      offer bespoke catering and seamless connectivity.</p>
+    <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to enquire about private events at Salwa Cafe.'|urlencode }}"
+      class="px-12 py-5 border-2 border-pink-500 text-pink-500 font-bold rounded-full uppercase tracking-tighter hover:bg-pink-500 hover:text-white transition duration-300">Book
+      Venue</a>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Elite Split Text for Cafe Hero
+  const cafeTitle = document.querySelector('.cafe-title');
+  if (cafeTitle) {
+    const text = cafeTitle.innerText;
+    cafeTitle.innerHTML = text.split('').map(char => {
+      if (char === ' ') return '<span>&nbsp;</span>';
+      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
+    }).join('');
+
+    gsap.from(cafeTitle.querySelectorAll('.char-inner'), {
+      y: "110%",
+      rotationX: -90,
+      opacity: 0,
+      duration: 1.8,
+      stagger: 0.03,
+      ease: "expo.out",
+      delay: 0.5
+    });
+  }
+
+  gsap.from(".cafe-hero p", {
+    y: 30,
+    opacity: 0,
+    duration: 1.2,
+    delay: 1.2,
+    ease: "expo.out"
+  });
+
+  gsap.from(".pink-button", {
+    scale: 0.8,
+    opacity: 0,
+    duration: 1,
+    delay: 1.5,
+    ease: "back.out(1.7)"
+  });
+
+  // Stagger reveal for delivery cards
+  gsap.from(".delivery-card", {
+    scrollTrigger: {
+      trigger: ".delivery-card",
+      start: "top 85%"
+    },
+    y: 60,
+    opacity: 0,
+    duration: 1.2,
+    stagger: 0.2,
+    ease: "expo.out"
+  });
+
+  // Menu section appearance
+  gsap.from(".menu-container", {
+    scrollTrigger: {
+      trigger: ".menu-container",
+      start: "top 80%"
+    },
+    clipPath: "inset(0% 0% 100% 0%)",
+    duration: 2,
+    ease: "expo.inOut"
+  });
+
+</script>
+{% endblock %}

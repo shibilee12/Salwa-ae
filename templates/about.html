@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block body_class %}bg-black text-white{% block extra_js %}
+<script>
+  // About Title Reveal
+  const aboutTitle = document.querySelector('h1');
+  if (aboutTitle) {
+    const text = aboutTitle.innerText;
+    aboutTitle.innerHTML = text.split('').map(char => {
+      if (char === ' ') return '<span>&nbsp;</span>';
+      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
+    }).join('');
+
+    gsap.from(aboutTitle.querySelectorAll('.char-inner'), {
+      y: "110%",
+      rotationX: -90,
+      opacity: 0,
+      duration: 1.8,
+      stagger: 0.05,
+      ease: "expo.out",
+      delay: 0.4
+    });
+  }
+
+  gsap.from(".max-w-4xl p, .max-w-4xl a", {
+    y: 20,
+    opacity: 0,
+    duration: 1.2,
+    stagger: 0.1,
+    ease: "expo.out",
+    delay: 0.8
+  });
+</script>
+{% endblock %}
+{% endblock %}
+
+{% block content %}
+<section class="py-16 sm:py-20 md:py-28 lg:py-36 px-4 sm:px-6">
+  <div class="max-w-4xl mx-auto">
+    <p class="gold tracking-[0.3em] sm:tracking-[0.4em] text-xs uppercase mb-3 sm:mb-4 text-[#d4af37]">Company Overview
+    </p>
+    <h1 class="brand text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-8 sm:mb-12">About Salwa</h1>
+    <div class="space-y-8 text-gray-300 leading-relaxed">
+      <p>Salwa is a multi-business brand in the UAE, built on the idea of <strong class="text-white">Feel the
+          Reality</strong> — real experiences across creative, culinary, culture, fragrance, and infrastructure.</p>
+      <p>Content to be provided: company story, founding year, vision, and values. This page will be updated with
+        approved copy and imagery.</p>
+    </div>
+
+    <div class="mt-12 sm:mt-16 md:mt-20 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      <a href="{% url 'business' 'studio' %}"
+        class="p-6 rounded-2xl border border-white/10 hover:border-[#d4af37]/50 transition text-left">
+        <span class="text-[#d4af37] text-xs uppercase tracking-wider">Division</span>
+        <h3 class="brand text-xl mt-2">Studio</h3>
+        <p class="text-gray-500 text-sm mt-1">Creative & design</p>
+      </a>
+      <a href="{% url 'business' 'cafe' %}"
+        class="p-6 rounded-2xl border border-white/10 hover:border-[#d4af37]/50 transition text-left">
+        <span class="text-[#d4af37] text-xs uppercase tracking-wider">Division</span>
+        <h3 class="brand text-xl mt-2">Café</h3>
+        <p class="text-gray-500 text-sm mt-1">Dining & delivery</p>
+      </a>
+      <a href="{% url 'business' 'bookshop' %}"
+        class="p-6 rounded-2xl border border-white/10 hover:border-[#d4af37]/50 transition text-left">
+        <span class="text-[#d4af37] text-xs uppercase tracking-wider">Division</span>
+        <h3 class="brand text-xl mt-2">Bookshop</h3>
+        <p class="text-gray-500 text-sm mt-1">Stationery & printing</p>
+      </a>
+      <a href="{% url 'business' 'perfumes' %}"
+        class="p-6 rounded-2xl border border-white/10 hover:border-[#d4af37]/50 transition text-left">
+        <span class="text-[#d4af37] text-xs uppercase tracking-wider">Division</span>
+        <h3 class="brand text-xl mt-2">Perfume</h3>
+        <p class="text-gray-500 text-sm mt-1">Fragrance</p>
+      </a>
+      <a href="{% url 'business' 'electricals' %}"
+        class="p-6 rounded-2xl border border-white/10 hover:border-[#d4af37]/50 transition text-left sm:col-span-2">
+        <span class="text-[#d4af37] text-xs uppercase tracking-wider">Division</span>
+        <h3 class="brand text-xl mt-2">Electricals</h3>
+        <p class="text-gray-500 text-sm mt-1">Power & solutions</p>
+      </a>
+    </div>
+
+    <div class="mt-12 sm:mt-16 md:mt-20 text-center">
+      <a href="{% url 'home' %}"
+        class="inline-flex items-center justify-center min-h-[48px] px-8 sm:px-10 py-3 sm:py-4 border-2 border-[#d4af37] rounded-full text-sm tracking-widest hover:bg-[#d4af37] hover:text-black transition active:scale-[0.98]">Back
+        to Home</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

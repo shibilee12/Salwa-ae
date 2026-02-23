@@ -1,1025 +1,589 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Salwa AE | Living Luxury Universe</title>
+{% block title %}Salwa AE | Feel the Reality{% endblock %}
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+{% block extra_css %}
+<style>
+  /* Text Reveal Styles */
+  .reveal-text {
+    overflow: hidden;
+    perspective: 1000px;
+  }
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap"
-    rel="stylesheet">
+  .char {
+    display: inline-block;
+    will-change: transform;
+  }
 
-  <!-- AOS -->
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  /* Magnetic Button Support */
+  .magnetic-btn {
+    display: inline-block;
+    transition: transform 0.1s;
+  }
 
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background: black;
-      overflow-x: hidden;
+  /* Hero Section Overrides */
+  .hero-section {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    filter: brightness(0.4);
+    clip-path: circle(0% at 50% 50%);
+  }
+
+  .hero-title {
+    font-size: clamp(5rem, 18vw, 15rem);
+    font-weight: 900;
+    line-height: 0.8;
+    margin-bottom: 2rem;
+    letter-spacing: -0.06em;
+    perspective: 2000px;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    color: transparent;
+    transition: all 0.5s ease;
+  }
+
+  .hero-title .kinetic-word span {
+    display: inline-block;
+    color: white;
+    -webkit-text-stroke: 0;
+  }
+
+  /* God-Tier Gradient Text */
+  .text-luxury {
+    background: linear-gradient(135deg, #fff 30%, var(--salwa-gold) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Liquid Displacement Overlays */
+  .liquid-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: #000;
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    pointer-events: none;
+    filter: url(#liquid-filter);
+  }
+
+  /* Glass Slider Effect */
+  .glass-slider {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(40px);
+    z-index: 50;
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+
+  /* Career Section Styles */
+  .career-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
+    padding: 3rem;
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .career-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+  }
+
+  .career-card:hover::before {
+    transform: translateX(100%);
+  }
+
+  .career-card:hover {
+    border-color: var(--salwa-gold);
+    transform: translateY(-10px) scale(1.02);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--salwa-gold);
+    margin-bottom: 2rem;
+  }
+
+  .division-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: clamp(1.25rem, 4vw, 3.5rem);
+    transition: border-color 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    height: auto;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .division-card:hover {
+    border-color: var(--salwa-gold);
+  }
+
+  .division-card h3 {
+    font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+    z-index: 2;
+  }
+
+  .division-card p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    z-index: 2;
+  }
+
+  .division-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0.15;
+    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    transform: scale(1.1);
+  }
+
+  .division-card:hover .division-bg {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    opacity: 0.6;
+  }
+
+  .luxury-btn {
+    background: var(--salwa-gold);
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 1.2rem 2.5rem;
+    border-radius: 99px;
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    display: inline-block;
+    text-align: center;
+  }
+
+  .luxury-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+    filter: brightness(1.1);
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  @media (max-width: 640px) {
+    .hero-subtitle {
+      letter-spacing: 0.35em;
+      font-size: 0.95rem;
     }
 
-    .brand {
-      font-family: 'Playfair Display', serif;
+    .scroll-indicator {
+      bottom: 1.5rem;
     }
+  }
+</style>
+{% endblock %}
 
-    .gold {
-      color: #d4af37;
-    }
+{% block content %}
+<div class="liquid-overlay" id="displacement-wipe"></div>
+<div class="glass-slider"></div>
 
-    /* immersive background */
-    .scene {
-      position: relative;
-      min-height: 100vh;
-      background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1920&q=80');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
+<section class="hero-section min-h-screen flex items-center justify-center relative overflow-hidden">
+  <div class="hero-distort absolute inset-0 z-0"></div>
+  <video autoplay muted loop playsinline preload="metadata" class="hero-bg hero-bg-parallax"
+    poster="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80">
+    <source src="{% static 'videos/hero_bg.mp4' %}" type="video/mp4">
+  </video>
+  <!-- God-Tier Fallback Image if Video/Source fails -->
+  <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80"
+    alt="Salwa Hero Fallback" class="hero-bg hero-bg-parallax" style="z-index: -2">
+  <div class="hero-overlay absolute inset-0 bg-black/50"></div>
 
-    /* layered overlays */
-    .dark-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-    }
-
-    /* animated aurora */
-    .aurora {
-      position: absolute;
-      inset: -30%;
-      background: conic-gradient(from 180deg, rgba(212, 175, 55, 0.25), rgba(120, 60, 255, 0.25), rgba(0, 0, 0, 0));
-      filter: blur(160px);
-      animation: auroraMove 30s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    @keyframes auroraMove {
-      0% {
-        transform: translate(-10%, -10%) rotate(0deg);
-      }
-
-      50% {
-        transform: translate(10%, 10%) rotate(180deg);
-      }
-
-      100% {
-        transform: translate(-10%, -10%) rotate(360deg);
-      }
-    }
-
-    /* floating orbs */
-    .orb {
-      position: absolute;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(212, 175, 55, 0.25), transparent 70%);
-      filter: blur(40px);
-      animation: floatOrb 22s ease-in-out infinite;
-    }
-
-    .orb.delay {
-      animation-delay: -10s;
-      background: radial-gradient(circle, rgba(120, 60, 255, 0.25), transparent 70%);
-    }
-
-    @keyframes floatOrb {
-      0% {
-        transform: translateY(0) translateX(0);
-      }
-
-      50% {
-        transform: translateY(-120px) translateX(80px);
-      }
-
-      100% {
-        transform: translateY(0) translateX(0);
-      }
-    }
-
-    /* star field */
-    .stars span {
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: rgba(255, 255, 255, 0.5);
-      animation: drift 25s linear infinite;
-    }
-
-    @keyframes drift {
-      from {
-        transform: translateY(0);
-      }
-
-      to {
-        transform: translateY(-120vh);
-      }
-    }
-
-    /* glass cards */
-    .glass {
-      background: rgba(255, 255, 255, 0.06);
-      backdrop-filter: blur(34px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    /* cursor glow */
-    .cursor-glow {
-      position: fixed;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      pointer-events: none;
-      background: radial-gradient(circle, rgba(212, 175, 55, 0.18), transparent 70%);
-      transform: translate(-50%, -50%);
-      transition: transform 0.05s linear;
-      z-index: 1;
-    }
-
-    /* Elite Inline content viewer */
-    .content-viewer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.5s ease;
-      opacity: 0;
-      perspective: 1000px;
-    }
-
-    .content-viewer.open {
-      max-height: 95vh;
-      opacity: 1;
-    }
-
-    .content-viewer .viewer-inner {
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      background: rgba(10, 10, 10, 0.4);
-      backdrop-filter: blur(40px);
-      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8),
-        0 0 40px rgba(212, 175, 55, 0.05);
-      position: relative;
-    }
-
-    /* Pulse gold border effect */
-    .content-viewer.open .viewer-inner::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      padding: 1px;
-      background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.6), transparent);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      animation: goldPulse 4s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes goldPulse {
-      0% {
-        opacity: 0.3;
-      }
-
-      50% {
-        opacity: 1;
-      }
-
-      100% {
-        opacity: 0.3;
-      }
-    }
-
-    /* Scanning animation overlay */
-    .scanning-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, transparent 50%, rgba(212, 175, 55, 0.05) 50.5%, transparent 51%);
-      background-size: 100% 4px;
-      pointer-events: none;
-      z-index: 5;
-      animation: scanEffect 8s linear infinite;
-      opacity: 0.3;
-    }
-
-    @keyframes scanEffect {
-      from {
-        background-position: 0 0;
-      }
-
-      to {
-        background-position: 0 100%;
-      }
-    }
-
-    .scanning-line {
-      position: absolute;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
-      top: 0;
-      z-index: 6;
-      animation: scanLine 4s ease-in-out infinite;
-    }
-
-    @keyframes scanLine {
-      0% {
-        top: 0%;
-        opacity: 0;
-      }
-
-      5% {
-        opacity: 1;
-      }
-
-      95% {
-        opacity: 1;
-      }
-
-      100% {
-        top: 100%;
-        opacity: 0;
-      }
-    }
-
-    /* Active card glow */
-    .biz-card {
-      position: relative;
-      cursor: pointer;
-      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .biz-card.active-card {
-      border-color: rgba(212, 175, 55, 0.6) !important;
-      box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
-      transform: scale(1.02) translateY(-10px);
-    }
-
-    .biz-card .card-hint {
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #d4af37;
-      opacity: 0;
-      transition: all 0.3s ease;
-      margin-top: 15px;
-      transform: translateY(10px);
-    }
-
-    .biz-card:hover .card-hint {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Luxury Control Buttons */
-    .luxury-btn {
-      padding: 0.6rem 1.2rem;
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      border-radius: 99px;
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transition: all 0.3s ease;
-      color: rgba(255, 255, 255, 0.8);
-    }
-
-    .luxury-btn:hover {
-      background: rgba(212, 175, 55, 0.1);
-      border-color: #d4af37;
-      color: #d4af37;
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-    }
-
-    .viewer-close {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .viewer-close:hover {
-      background: rgba(212, 175, 55, 0.2);
-      border-color: #d4af37;
-      color: #d4af37;
-      transform: rotate(90deg);
-    }
-
-    /* Custom scrollbar for gallery */
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.2);
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(212, 175, 55, 0.2);
-      border-radius: 99px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(212, 175, 55, 0.4);
-    }
-  </style>
-</head>
-
-<body class="text-white">
-
-  <div class="cursor-glow" id="cursorGlow"></div>
-
-  <!-- NAV -->
-  <header class="fixed w-full top-0 z-50 bg-black/30 backdrop-blur">
-    <div class="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center">
-      <h1 class="brand text-2xl">Salwa <span class="gold">AE</span></h1>
-      <nav class="hidden md:flex space-x-12 uppercase tracking-widest text-xs">
-        <a href="#studio" class="hover:text-[#d4af37] transition nav-link" data-target="studio">Studio</a>
-        <a href="#perfumes" class="hover:text-[#d4af37] transition nav-link" data-target="perfumes">Perfumes</a>
-        <a href="#cafe" class="hover:text-[#d4af37] transition nav-link" data-target="cafe">Café</a>
-        <a href="#electricals" class="hover:text-[#d4af37] transition nav-link"
-          data-target="electricals">Electricals</a>
-        <a href="#bookshop" class="hover:text-[#d4af37] transition nav-link" data-target="bookshop">Bookshop</a>
-      </nav>
+  <div class="hero-content px-4 text-center">
+    <div class="reveal-text mb-6">
+      <p class="hero-subtitle !mb-0 opacity-0 entrance-up tracking-[1em] text-xs">PHASE 03 // BEYOND REALITY</p>
     </div>
-  </header>
-
-  <!-- HERO -->
-  <section class="scene">
-    <div class="dark-overlay"></div>
-    <div class="aurora"></div>
-    <div class="orb" style="top:20%; left:10%"></div>
-    <div class="orb delay" style="bottom:15%; right:10%"></div>
-
-    <!-- stars -->
-    <div class="stars">
-      <span style="left:10%; animation-delay:0s"></span>
-      <span style="left:30%; animation-delay:5s"></span>
-      <span style="left:50%; animation-delay:10s"></span>
-      <span style="left:70%; animation-delay:15s"></span>
-      <span style="left:90%; animation-delay:20s"></span>
-    </div>
-
-    <div class="relative z-10 min-h-screen flex items-center justify-center text-center px-6" data-aos="fade-up">
-      <div>
-        <h2 class="brand text-6xl md:text-7xl mb-8 leading-tight">
-          A <span class="gold">Living</span><br>Luxury Universe
-        </h2>
-        <p class="text-lg text-gray-300 max-w-2xl mx-auto mb-16">
-          Experience motion, depth, and elegance — a brand that breathes, moves, and evolves.
-        </p>
-        <a href="#businesses"
-          class="px-12 py-4 border border-[#d4af37] rounded-full tracking-widest hover:bg-[#d4af37] hover:text-black transition">
-          EXPLORE
-        </a>
+    <h1 class="hero-title text-white">
+      <span class="block kinetic-word overflow-hidden"><span
+          class="block translate-y-full opacity-0">SALWA</span></span>
+      <span class="block kinetic-word overflow-hidden text-luxury"><span
+          class="block translate-y-full opacity-0">GROUP</span></span>
+    </h1>
+    <div class="mt-16 opacity-0 entrance-up flex flex-col items-center gap-6" style="transition-delay: 1.2s">
+      <a href="#divisions" class="luxury-btn !px-16 !py-8 !text-sm !tracking-[0.8em]">INITIATE PROTOCOL</a>
+      <div class="flex items-center gap-4 text-[0.6rem] uppercase tracking-[0.4em] opacity-30">
+        <span>Dubai</span>
+        <span class="w-1 h-1 bg-white rounded-full"></span>
+        <span>Abu Dhabi</span>
+        <span class="w-1 h-1 bg-white rounded-full"></span>
+        <span>Global</span>
       </div>
-    </div>
-  </section>
-
-  <!-- BUSINESSES -->
-  <section id="businesses" class="py-48 bg-gradient-to-b from-black to-[#020617]">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-32" data-aos="fade-up">
-        <p class="gold tracking-[0.4em] text-xs uppercase mb-4">Discover the Essence</p>
-        <h3 class="brand text-5xl md:text-6xl">The Salwa Dimensions</h3>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-
-        <a id="studio" href="javascript:void(0)" class="biz-card glass p-14 rounded-[2rem] group" data-biz="studio"
-          data-aos="fade-up">
-          <div class="flex flex-col h-full">
-            <h4 class="brand text-3xl mb-4 group-hover:gold transition-colors">Salwa Studio</h4>
-            <p class="text-gray-400 font-light flex-grow">Advanced creative intelligence and design thinking for the
-              next era of digital luxury.</p>
-            <p class="card-hint">Initialize dimension</p>
-          </div>
-        </a>
-
-        <a id="perfumes" href="javascript:void(0)" class="biz-card glass p-14 rounded-[2rem] group" data-biz="perfumes"
-          data-aos="fade-up" data-aos-delay="100">
-          <div class="flex flex-col h-full">
-            <h4 class="brand text-3xl mb-4 group-hover:gold transition-colors">Salwa Perfumes</h4>
-            <p class="text-gray-400 font-light flex-grow">Crafting rare olfactory narratives that redefine the boundary
-              between scent and reality.</p>
-            <p class="card-hint">Experience scent</p>
-          </div>
-        </a>
-
-        <a id="cafe" href="javascript:void(0)"
-          class="biz-card glass p-14 rounded-[2rem] group border border-[#d4af37]/20" data-biz="cafe" data-aos="fade-up"
-          data-aos-delay="200">
-          <div class="flex flex-col h-full">
-            <h4 class="brand text-3xl mb-4 gold">Salwa Café</h4>
-            <p class="text-gray-300 font-light flex-grow">A curated sanctuary where luxury gastronomy meets futuristic
-              social intelligence.</p>
-            <p class="card-hint">☕ Access Menu</p>
-          </div>
-        </a>
-
-        <a id="electricals" href="javascript:void(0)" class="biz-card glass p-14 rounded-[2rem] group"
-          data-biz="electricals" data-aos="fade-up" data-aos-delay="300">
-          <div class="flex flex-col h-full">
-            <h4 class="brand text-3xl mb-4 group-hover:gold transition-colors">Salwa Electricals</h4>
-            <p class="text-gray-400 font-light flex-grow">Intelligent power solutions designed for an interconnected,
-              high-performance future.</p>
-            <p class="card-hint">Verify systems</p>
-          </div>
-        </a>
-
-        <a id="bookshop" href="javascript:void(0)" class="biz-card glass p-14 rounded-[2rem] group" data-biz="bookshop"
-          data-aos="fade-up" data-aos-delay="400">
-          <div class="flex flex-col h-full">
-            <h4 class="brand text-3xl mb-4 group-hover:gold transition-colors">Salwa Bookshop</h4>
-            <p class="text-gray-400 font-light flex-grow">A repository of future knowledge, curating the minds of
-              tomorrow through exceptional literature.</p>
-            <p class="card-hint">Acquire knowledge</p>
-          </div>
-        </a>
-
-      </div>
-
-      <!-- ELITE INLINE CONTENT VIEWER -->
-      <div id="contentViewer" class="content-viewer mt-32">
-        <div class="viewer-inner rounded-[2.5rem] overflow-hidden relative border border-white/10">
-
-          <!-- Glowing Scan UI -->
-          <div class="scanning-overlay"></div>
-          <div class="scanning-line"></div>
-
-          <!-- Luxury Header bar -->
-          <div
-            class="flex items-center justify-between px-12 py-8 border-b border-white/5 bg-black/40 backdrop-blur-xl relative z-10">
-            <div class="flex items-center space-x-6">
-              <div class="w-12 h-1px bg-gold/50"></div>
-              <h4 id="viewerTitle" class="brand text-2xl tracking-widest gold uppercase"></h4>
-            </div>
-
-            <div class="flex items-center space-x-6">
-              <a href="/cafe-menu.pdf" download class="luxury-btn hidden" id="downloadBtn">Download</a>
-              <button onclick="window.print()" class="luxury-btn hidden" id="printBtn">Print</button>
-              <button id="viewerClose" class="viewer-close text-white/50 text-xl leading-none">✕</button>
-            </div>
-          </div>
-
-          <!-- Content area -->
-          <div id="viewerBody" class="relative z-10 bg-black/20" style="height: 85vh;">
-
-            <!-- LOADING STATE -->
-            <div id="contentLoading"
-              class="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md transition-opacity duration-500">
-              <div class="w-24 h-24 relative mb-6">
-                <div class="absolute inset-0 border-2 border-gold/20 rounded-full"></div>
-                <div class="absolute inset-0 border-t-2 border-gold rounded-full animate-spin"></div>
-              </div>
-              <p class="brand text-xl gold animate-pulse uppercase tracking-[0.5em]">Initializing Dimension...</p>
-            </div>
-
-            <!-- Café Menu PDF -->
-            <div id="content-cafe"
-              class="content-panel w-full h-full hidden opacity-0 transition-opacity duration-1000">
-              <embed id="cafeEmbed" src="" type="application/pdf" class="w-full h-full" />
-              <div id="pdfFallback" class="hidden absolute inset-0 flex items-center justify-center p-14 text-center">
-                <div class="glass p-12 rounded-[2rem]">
-                  <p class="brand text-2xl mb-8 gold">PROTOCOL ERROR</p>
-                  <p class="text-gray-400 mb-10 max-w-sm mx-auto">Dimension visualizer not supported in this
-                    environment. Download requested asset below.</p>
-                  <a href="/cafe-menu.pdf" target="_blank"
-                    class="px-10 py-4 bg-gold text-black rounded-full font-bold tracking-widest hover:scale-110 transition uppercase text-xs">Access
-                    Source PDF</a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Salwa Studio Dimension -->
-            <div id="content-studio"
-              class="content-panel w-full h-full hidden opacity-0 transition-opacity duration-1000 overflow-hidden relative">
-              <!-- Background Image with Elite Framing -->
-              <div class="absolute inset-0 z-0">
-                <img src="{% static 'studio/studio.jpg.jpeg' %}" alt="Salwa Studio" class="w-full h-full object-cover">
-                <!-- Darkened Glass Overlay -->
-                <!-- We blur only the area behind the text card in the CSS via backdrop-filter on the card itself -->
-                <div class="absolute inset-0 bg-black/30"></div>
-                <div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent"></div>
-              </div>
-
-              <!-- Foreground Content -->
-              <div class="relative z-10 h-full flex items-center px-12 md:px-24">
-                <div class="max-w-2xl glass p-12 md:p-16 rounded-[2.5rem] border border-white/10 backdrop-blur-xl"
-                  data-aos="fade-right" data-aos-delay="500">
-                  <div class="flex items-center space-x-6 mb-8">
-                    <div class="w-16 h-1px bg-gold"></div>
-                    <p class="gold tracking-[0.5em] text-xs uppercase">Creative Dimension Initialized</p>
-                  </div>
-
-                  <h5 class="brand text-5xl md:text-6xl mb-10 leading-tight">
-                    A New Era of<br><span class="gold">Design Intelligence</span>
-                  </h5>
-
-                  <p class="text-gray-300 text-base md:text-lg font-light leading-relaxed mb-12 max-w-xl">
-                    Salwa Studio represents the fusion of advanced creative strategy and futuristic design thinking. We
-                    don't just build brands; we engineer digital legacies for the world's most discerning entities.
-                  </p>
-
-                  <div class="flex flex-wrap gap-8">
-                    <button
-                      class="px-10 py-4 bg-gold text-black rounded-full font-bold tracking-widest hover:scale-110 transition uppercase text-[0.65rem]">Begin
-                      Project</button>
-                    <button id="viewPortfolio"
-                      class="px-10 py-4 border border-white/20 rounded-full font-bold tracking-widest hover:border-gold hover:text-gold transition uppercase text-[0.65rem]">View
-                      Portfolio</button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Subtle Scanning Overlay (Exclusive to Studio) -->
-              <div class="absolute bottom-12 right-12 z-10 flex flex-col items-end opacity-40">
-                <p class="text-[0.6rem] uppercase tracking-[0.4em] text-gold mb-2">Agency Status: Active</p>
-                <div class="flex space-x-1">
-                  <div class="w-1 h-1 bg-gold rounded-full animate-pulse"></div>
-                  <div class="w-1 h-1 bg-gold rounded-full animate-pulse delay-75"></div>
-                  <div class="w-1 h-1 bg-gold rounded-full animate-pulse delay-150"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Placeholder panels for other dimensions -->
-            <div id="content-perfumes" class="content-panel w-full h-full hidden flex items-center justify-center">
-              <div class="text-center py-32 px-10">
-                <p class="brand text-4xl gold mb-6 uppercase tracking-widest">Salwa Perfumes</p>
-                <div class="w-20 h-1px bg-gold/30 mx-auto mb-8"></div>
-                <p class="text-gray-400 text-xl font-light tracking-wide max-w-xl mx-auto leading-relaxed">Olfactory
-                  data streams are being calibrated. The sensory dimension will be accessible soon.</p>
-              </div>
-            </div>
-
-            <!-- Salwa Electricals Dimension -->
-            <div id="content-electricals"
-              class="content-panel w-full h-full hidden opacity-0 transition-opacity duration-1000 overflow-y-auto custom-scrollbar relative">
-              <!-- Technical Grid Background -->
-              <div class="absolute inset-0 z-0 opacity-20"
-                style="background-image: radial-gradient(circle at 2px 2px, rgba(212,175,55,0.1) 1px, transparent 0); background-size: 40px 40px;">
-              </div>
-
-              <div class="relative z-10 p-12 md:p-20">
-                <div class="flex items-center justify-between mb-16" data-aos="fade-down">
-                  <div>
-                    <p class="gold tracking-[0.5em] text-xs uppercase mb-2">Infrastructure Intelligence Division</p>
-                    <h5 class="brand text-4xl uppercase tracking-widest leading-normal">Engineering the<br><span
-                        class="gold">Arteries of the Future</span></h5>
-                  </div>
-                  <div class="hidden lg:flex flex-col items-end opacity-40">
-                    <p class="text-[0.6rem] uppercase tracking-[0.4em] text-gold mb-2">Power Efficiency: 99.8%</p>
-                    <div class="w-32 h-1px bg-gold/30 relative">
-                      <div class="absolute inset-0 bg-gold w-3/4 animate-pulse"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                  <!-- Module 1: Elite Electrical Services -->
-                  <div
-                    class="glass p-10 rounded-[2rem] border border-white/10 hover:border-gold/30 transition-all duration-700 group"
-                    data-aos="fade-right" data-aos-delay="200">
-                    <div class="flex items-start justify-between mb-10">
-                      <div
-                        class="w-16 h-16 rounded-2xl bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
-                        <svg class="w-8 h-8 gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                      </div>
-                      <p
-                        class="text-[0.6rem] gold font-mono uppercase tracking-widest py-1 px-3 border border-gold/20 rounded-full">
-                        Engineering Excellence</p>
-                    </div>
-                    <h6 class="brand text-2xl mb-4 group-hover:gold transition-colors">Elite Electrical Services</h6>
-                    <p class="text-gray-400 font-light leading-relaxed mb-8">
-                      Precision electrical solutions for high-end properties. We specialize in sophisticated circuitry,
-                      phase-load management, and seamless grid integration tailored for modern luxury.
-                    </p>
-                    <ul class="space-y-3 mb-8">
-                      <li class="flex items-center text-xs text-gray-400 font-light"><span
-                          class="w-1.5 h-1.5 bg-gold rounded-full mr-3"></span>Phase-Load Balancing</li>
-                      <li class="flex items-center text-xs text-gray-400 font-light"><span
-                          class="w-1.5 h-1.5 bg-gold rounded-full mr-3"></span>Smart Grid Integration</li>
-                      <li class="flex items-center text-xs text-gray-400 font-light"><span
-                          class="w-1.5 h-1.5 bg-gold rounded-full mr-3"></span>Advanced Audio-Visual Wiring</li>
-                      <li class="flex items-center text-xs text-gray-400 font-light"><span
-                          class="w-1.5 h-1.5 bg-gold rounded-full mr-3"></span>Emergency Power Systems</li>
-                    </ul>
-                    <div
-                      class="pt-6 border-t border-white/5 flex justify-between text-[0.6rem] uppercase tracking-widest text-gray-500">
-                      <span>Service Tier</span>
-                      <span class="gold">Signature Elite</span>
-                    </div>
-                  </div>
-
-                  <!-- Module 2: Elite Plumbing & Hydraulics -->
-                  <div
-                    class="glass p-10 rounded-[2rem] border border-white/10 hover:border-gold/30 transition-all duration-700 group"
-                    data-aos="fade-left" data-aos-delay="400">
-                    <div class="flex items-start justify-between mb-10">
-                      <div
-                        class="w-16 h-16 rounded-2xl bg-gold/10 flex items-center justify-center group-hover:bg-gold/20 transition-colors">
-                        <svg class="w-8 h-8 gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
-                          </path>
-                        </svg>
-                      </div>
-                      <p
-                        class="text-[0.6rem] gold font-mono uppercase tracking-widest py-1 px-3 border border-gold/20 rounded-full">
-                        Hydraulic Precision</p>
-                    </div>
-                    <h6 class="brand text-2xl mb-4 group-hover:gold transition-colors">Elite Plumbing Systems</h6>
-                    <p class="text-gray-400 font-light leading-relaxed mb-8">
-                      High-performance plumbing and fluid dynamics. We provide intelligent water management systems
-                      designed for architectural durability and supreme performance.
-                    </p>
-                    <ul class="space-y-3 mb-8">
-                      <li class="flex items-center text-xs text-gray-400 font-light"><span
-                          class="w-1.5 h-1.5 bg-gold rounded-full mr-3"></span>Smart Leak Detection Systems</li>
-                      <li class="flex items-center text-xs text-gray-400 font-light"><span
-                          class="w-1.5 h-1.5 bg-gold rounded-full mr-3"></span>Advanced Reverse Osmosis Filtration</li>
-                      <li class="flex items-center text-xs text-gray-400 font-light"><span
-                          class="w-1.5 h-1.5 bg-gold rounded-full mr-3"></span>Pressure-Controlled Delivery</li>
-                      <li class="flex items-center text-xs text-gray-400 font-light"><span
-                          class="w-1.5 h-1.5 bg-gold rounded-full mr-3"></span>Luxury Fixture Integration</li>
-                    </ul>
-                    <div
-                      class="pt-6 border-t border-white/5 flex justify-between text-[0.6rem] uppercase tracking-widest text-gray-500">
-                      <span>Integrity Level</span>
-                      <span class="gold">Absolute</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Footer Technical Note -->
-                <div class="mt-16 flex items-center justify-center opacity-30 group" data-aos="fade-up">
-                  <div
-                    class="w-8 h-8 border border-gold/40 rounded-full flex items-center justify-center animate-spin-slow m-4">
-                    <div class="w-1 h-1 bg-gold rounded-full"></div>
-                  </div>
-                  <p class="text-[0.6rem] uppercase tracking-[0.5em] text-gray-500">System architecture verified for
-                    Genesis deployment</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Salwa Bookshop Gallery -->
-            <div id="content-bookshop" class="content-panel w-full h-full hidden overflow-y-auto custom-scrollbar">
-              <div class="p-12 md:p-20">
-                <div class="flex items-center justify-between mb-16">
-                  <div>
-                    <p class="gold tracking-[0.3em] text-xs uppercase mb-2">Future Knowledge Repository</p>
-                    <h5 class="brand text-4xl uppercase tracking-widest">Library of the Next Era</h5>
-                  </div>
-                  <div class="hidden md:block w-32 h-1px bg-gold/20"></div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-
-                  <!-- Book 1 -->
-                  <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-                    <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-                      <img src="{% static 'books/christopher-stites-mkpyaCc_Q58-unsplash.jpg' %}" alt="Future Design"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                      <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-                      </div>
-                    </div>
-                    <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Digital Metaphysics</h6>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">C. Stites • Vol 01</p>
-                    <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-                  </div>
-
-                  <!-- Book 2 -->
-                  <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-                    <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-                      <img src="{% static 'books/christopher-stites-xIB5FvmLESA-unsplash.jpg' %}"
-                        alt="Architectural Futurity"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                      <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-                      </div>
-                    </div>
-                    <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Spatial Intelligence</h6>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">C. Stites • Vol 02</p>
-                    <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-                  </div>
-
-                  <!-- Book 3 -->
-                  <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-                    <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-                      <img src="{% static 'books/daria-nepriakhina-xY55bL5mZAM-unsplash.jpg' %}" alt="Complex Systems"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                      <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-                      </div>
-                    </div>
-                    <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Synthetic Realities</h6>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">D. Nepriakhina • 2026</p>
-                    <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-                  </div>
-
-                  <!-- Book 4 -->
-                  <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-                    <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-                      <img src="{% static 'books/gaspar-uhas-Aq4TL94u1t4-unsplash.jpg' %}" alt="Global Power"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                      <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-                      </div>
-                    </div>
-                    <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">The Quantum State</h6>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">G. Uhas • Speculative</p>
-                    <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-                  </div>
-
-                  <!-- Book 5 -->
-                  <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-                    <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-                      <img src="{% static 'books/jessica-fadel-qXuMWgoga6Q-unsplash.jpg' %}" alt="Minimalism"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                      <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-                      </div>
-                    </div>
-                    <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Essence of Luxury</h6>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">J. Fadel • Curated</p>
-                    <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-                  </div>
-
-                  <!-- Book 6 -->
-                  <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-                    <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-                      <img src="{% static 'books/sincerely-media-CXYPfveiuis-unsplash.jpg' %}" alt="Media Theory"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                      <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-                      </div>
-                    </div>
-                    <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Narrative Structures</h6>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Sincerely Media • Vol 04</p>
-                    <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-                  </div>
-
-                  <!-- Book 7 -->
-                  <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-                    <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-                      <img src="{% static 'books/toa-heftiba-ip9R11FMbV8-unsplash.jpg' %}" alt="Philosophy"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                      <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-                      </div>
-                    </div>
-                    <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Beyond the Binary</h6>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">T. Heftiba • Theory</p>
-                    <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-                  </div>
-
-                  <!-- Book 8 -->
-                  <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-                    <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-                      <img src="{% static 'books/zoe-1nYWu8_s3dE-unsplash.jpg' %}" alt="Photography"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                      <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-                      </div>
-                    </div>
-                    <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Visual Lexicon</h6>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Zoe • Masterpiece</p>
-                    <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-                  </div>
-
-                  <!-- Book 9 -->
-                  <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-                    <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-                      <img src="{% static 'books/zoe-6kOu3pdLvRM-unsplash.jpg' %}" alt="Photography vol 2"
-                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                      <div
-                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-                      </div>
-                    </div>
-                    <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Chromatic Depths</h6>
-                    <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Zoe • Vol 02</p>
-                    <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ELITE PORTFOLIO POPUP -->
-  <div id="portfolioModal"
-    class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500">
-    <div class="absolute top-10 right-10 flex items-center space-x-8 z-[110]">
-      <p class="brand text-sm gold tracking-[0.4em] uppercase hidden md:block">Studio Full-Scale Visual v1.1</p>
-      <button id="closePortfolio" class="viewer-close text-white text-4xl hover:text-gold transition-colors">✕</button>
-    </div>
-
-    <!-- Expanded Container for Full-Scale Viewing -->
-    <div
-      class="relative w-[95vw] h-[92vh] p-1 rounded-[1.5rem] overflow-hidden shadow-[0_0_150px_rgba(212,175,55,0.15)] border border-gold/40 gold-glow">
-      <div class="scanning-overlay"></div>
-      <div class="scanning-line"></div>
-      <!-- Image fills the expanded frame while maintaining aspect ratio -->
-      <img src="{% static 'studio/studio.jpg.jpeg' %}" alt="Salwa Studio Portfolio Full"
-        class="w-full h-full object-contain bg-black/20">
     </div>
   </div>
 
-  <footer class="py-28 text-center text-gray-400 border-t border-white/5 bg-black">
-    <p class="brand text-2xl text-white mb-4 tracking-widest">SALWA <span class="gold">AE</span></p>
-    <div class="flex justify-center space-x-8 text-xs uppercase tracking-[0.3em] text-gray-500 mb-10">
-      <span>Luxury</span>
-      <span class="text-gold">•</span>
-      <span>Creative</span>
-      <span class="text-gold">•</span>
-      <span>Futuristic</span>
+  <div class="scroll-indicator animate-bounce">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+    </svg>
+  </div>
+</section>
+
+<section id="divisions" class="py-20 sm:py-28 md:py-32 max-w-7xl mx-auto px-4 sm:px-6 relative">
+  <div class="mb-16">
+    <h2 class="text-4xl font-bold mb-4 brand-font">OUR <span style="color: var(--salwa-gold)">DIVISIONS</span></h2>
+    <div class="w-20 h-1 bg-gold"></div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Salwa Studio -->
+    <a href="{% url 'business' 'studio' %}" class="division-card">
+      <img src="{% static 'logos/salwastudio.jpeg' %}" alt="Salwa Studio" class="division-bg">
+      <div class="division-card-content">
+        <h3 class="brand-font">Salwa Studio</h3>
+        <p>Advanced creative intelligence and design thinking.</p>
+      </div>
+    </a>
+
+    <!-- Salwa Cafe -->
+    <a href="{% url 'business' 'cafe' %}" class="division-card">
+      <img src="{% static 'logos/salwacafe.jpeg' %}" alt="Salwa Cafe" class="division-bg">
+      <div class="division-card-content">
+        <h3 class="brand-font">Salwa Cafe</h3>
+        <p>A curated sanctuary where luxury gastronomy meets social intelligence.</p>
+      </div>
+    </a>
+
+    <!-- Salwa Bookshop -->
+    <a href="{% url 'business' 'bookshop' %}" class="division-card">
+      <img src="{% static 'logos/salwabookshop.jpeg' %}" alt="Salwa Bookshop" class="division-bg">
+      <div class="division-card-content">
+        <h3 class="brand-font">Salwa Bookshop</h3>
+        <p>A repository of knowledge for the next era. Curating minds.</p>
+      </div>
+    </a>
+
+    <!-- Salwa Perfumes -->
+    <a href="{% url 'business' 'perfumes' %}" class="division-card">
+      <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80"
+        alt="Salwa Perfumes" class="division-bg">
+      <div class="division-card-content">
+        <h3 class="brand-font">Salwa Perfumes</h3>
+        <p>Rare olfactory narratives that redefine boundaries.</p>
+      </div>
+    </a>
+
+    <!-- Salwa Electricals -->
+    <a href="{% url 'business' 'electricals' %}" class="division-card">
+      <img src="{% static 'logos/salwaelectricals.jpeg' %}" alt="Salwa Electricals" class="division-bg">
+      <div class="division-card-content">
+        <h3 class="brand-font">Salwa Electricals</h3>
+        <p>Intelligent power solutions for an interconnected future.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- NEW: Careers Teaser Section -->
+<section class="py-20 sm:py-28 md:py-40 bg-black relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="scroll-reveal">
+        <p class="gold tracking-[0.5em] text-xs uppercase mb-4">The Future is Salwa</p>
+        <h2 class="text-5xl md:text-7xl font-bold mb-8 brand-font leading-tight">JOIN THE<br><span
+            style="color: var(--salwa-gold)">EVOLUTION</span></h2>
+        <p class="text-gray-400 text-lg mb-12 leading-relaxed max-w-lg">
+          We don't just hire employees; we recruit visionaries ready to define the future of UAE's creative and
+          industrial landscape.
+        </p>
+        <a href="{% url 'careers' %}" class="luxury-btn !px-16">View Vacancies</a>
+      </div>
+      <div class="grid grid-cols-2 gap-6">
+        <div class="career-card mt-12 hover-tilt">
+          <div class="text-gold text-sm mb-4">01</div>
+          <h4 class="text-xl font-bold mb-2">Creatives</h4>
+          <p class="text-xs text-gray-500">Studios & Design Intelligence</p>
+        </div>
+        <div class="career-card hover-tilt">
+          <div class="text-gold text-sm mb-4">02</div>
+          <h4 class="text-xl font-bold mb-2">Artisans</h4>
+          <p class="text-xs text-gray-500">Culinary & Olfactory Crafts</p>
+        </div>
+        <div class="career-card mt-12 hover-tilt">
+          <div class="text-gold text-sm mb-4">03</div>
+          <h4 class="text-xl font-bold mb-2">Strategists</h4>
+          <p class="text-xs text-gray-500">Operations & Growth</p>
+        </div>
+        <div class="career-card hover-tilt">
+          <div class="text-gold text-sm mb-4">04</div>
+          <h4 class="text-xl font-bold mb-2">Engineers</h4>
+          <p class="text-xs text-gray-500">Infrastructure & Energy</p>
+        </div>
+      </div>
     </div>
-    <p class="text-xs font-light text-gray-600">© 2026 Salwa AE • System Genesis</p>
-  </footer>
+  </div>
+</section>
 
-  <script>
-    AOS.init({ duration: 1500, once: true, easing: 'ease-out-expo' });
+<section class="py-20 sm:py-28 md:py-32 bg-black/50 backdrop-blur-md relative overflow-hidden border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="mb-16">
+      <h2 class="text-4xl font-bold mb-4 brand-font">CURATED <span style="color: var(--salwa-gold)">KNOWLEDGE</span>
+      </h2>
+      <div class="w-20 h-1 bg-gold"></div>
+    </div>
 
-    // Cursor glow
-    const glow = document.getElementById('cursorGlow');
-    document.addEventListener('mousemove', e => {
-      glow.style.left = e.clientX + 'px';
-      glow.style.top = e.clientY + 'px';
-    });
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Book 5 -->
+      <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
+        <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
+          <img src="{% static 'books/jessica-fadel-qXuMWgoga6Q-unsplash.jpg' %}" alt="Minimalism"
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
+          </div>
+        </div>
+        <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Essence of Luxury</h6>
+        <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">J. Fadel • Curated</p>
+        <a href="{% url 'business' 'bookshop' %}" class="luxury-btn w-full !rounded-xl">Acquire Knowledge</a>
+      </div>
 
-    // ── Elite Inline Content Viewer ──
-    const viewer = document.getElementById('contentViewer');
-    const viewerTitle = document.getElementById('viewerTitle');
-    const viewerClose = document.getElementById('viewerClose');
-    const cafeEmbed = document.getElementById('cafeEmbed');
-    const pdfFallback = document.getElementById('pdfFallback');
-    const contentLoading = document.getElementById('contentLoading');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const printBtn = document.getElementById('printBtn');
-    const allCards = document.querySelectorAll('.biz-card');
-    const allPanels = document.querySelectorAll('.content-panel');
+      <!-- Book 6 -->
+      <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
+        <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
+          <img src="{% static 'books/sincerely-media-CXYPfveiuis-unsplash.jpg' %}" alt="Media Theory"
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
+          </div>
+        </div>
+        <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Narrative Structures</h6>
+        <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Sincerely Media • Vol 04</p>
+        <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
+      </div>
 
-    // Portfolio variables
-    const portfolioModal = document.getElementById('portfolioModal');
-    const viewPortfolioBtn = document.getElementById('viewPortfolio');
-    const closePortfolioBtn = document.getElementById('closePortfolio');
+      <!-- Book 7 -->
+      <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
+        <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
+          <img src="{% static 'books/toa-heftiba-ip9R11FMbV8-unsplash.jpg' %}" alt="Philosophy"
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
+          </div>
+        </div>
+        <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Beyond the Binary</h6>
+        <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">T. Heftiba • Theory</p>
+        <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
+      </div>
 
-    const titles = {
-      cafe: 'Salwa Café — Culinary Menu',
-      studio: 'Salwa Studio — Creative intelligence',
-      perfumes: 'Salwa Perfumes — Olfactory futures',
-      electricals: 'Salwa Electricals — Intelligent power',
-      bookshop: 'Salwa Bookshop — Future knowledge'
-    };
+      <!-- Book 8 -->
+      <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
+        <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
+          <img src="{% static 'books/zoe-1nYWu8_s3dE-unsplash.jpg' %}" alt="Photography"
+            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
+          </div>
+        </div>
+        <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Visual Lexicon</h6>
+        <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Zoe • Masterpiece</p>
+        <a href="{% url 'business' 'bookshop' %}" class="luxury-btn w-full !rounded-xl">Acquire Knowledge</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    let activeBiz = null;
+<!-- RESTORED: Portfolio Modal (Accidentally removed) -->
+<div id="portfolioModal"
+  class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500 p-2 sm:p-4">
+  <div class="absolute top-4 right-4 flex items-center gap-4 z-[110]">
+    <button type="button" id="closePortfolio"
+      class="viewer-close text-white text-4xl hover:text-gold transition-colors">✕</button>
+  </div>
+  <div class="relative w-full max-w-[95vw] h-[85dvh] rounded-xl overflow-hidden border border-gold/40 shadow-2xl">
+    <img src="{% static 'studio/studio.jpg.jpeg' %}" alt="Portfolio Full" class="w-full h-full object-contain">
+  </div>
+</div>
 
-    function openViewer(biz) {
-      if (activeBiz === biz) { closeViewer(); return; }
-      activeBiz = biz;
+{% endblock %}
 
-      // Reset loading state
-      contentLoading.classList.remove('opacity-0');
-      contentLoading.style.display = 'flex';
+{% block extra_js %}
+<script>
+  // Advanced Animation Utilities
+  const ScrambleText = {
+    chars: 'ABCDEFHIJKLMNOPQRSTUVWXYZ1234567890@#$%&',
+    scramble(el, text, duration = 1.5) {
+      let iteration = 0;
+      const interval = setInterval(() => {
+        el.innerText = text.split("").map((letter, index) => {
+          if (index < iteration) return text[index];
+          return this.chars[Math.floor(Math.random() * this.chars.length)];
+        }).join("");
 
-      // Highlight card
-      allCards.forEach(c => c.classList.remove('active-card'));
-      const card = document.querySelector(`.biz-card[data-biz="${biz}"]`);
-      if (card) card.classList.add('active-card');
+        if (iteration >= text.length) clearInterval(interval);
+        iteration += text.length / (duration * 60);
+      }, 30);
+    }
+  };
 
-      // Panels
-      allPanels.forEach(p => {
-        p.classList.add('hidden');
-        p.classList.remove('opacity-100');
-        p.classList.add('opacity-0');
-      });
+  document.addEventListener('DOMContentLoaded', () => {
+    // 0. Reality Distortion Entrance (Liquid Wipe)
+    const godTl = gsap.timeline();
 
-      const panel = document.getElementById('content-' + biz);
-      if (panel) {
-        panel.classList.remove('hidden');
-        setTimeout(() => panel.classList.add('opacity-100'), 50);
-      }
+    // Initial Liquid Wipe
+    godTl.to("#displacement-wipe", {
+      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+      duration: 1.5,
+      ease: "power4.inOut"
+    })
+      .to("#displacement-wipe", {
+        clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)",
+        duration: 1.5,
+        ease: "power4.inOut"
+      })
+      // Liquid Mask Reveal for Hero BG
+      .to(".hero-bg", {
+        clipPath: "circle(100% at 50% 50%)",
+        duration: 2.5,
+        ease: "expo.inOut"
+      }, "-=1")
+      // Kinetic Typography Stagger
+      .to(".kinetic-word span", {
+        y: 0,
+        opacity: 1,
+        duration: 1.8,
+        stagger: 0.3,
+        ease: "expo.out"
+      }, "-=1.5")
+      .to(".entrance-up", {
+        y: 0,
+        opacity: 1,
+        duration: 1.5,
+        stagger: 0.2,
+        ease: "expo.out"
+      }, "-=1");
 
-      viewerTitle.textContent = titles[biz] || biz;
+    // 1. Liquid Transition Shaders (SVG Displacement)
+    gsap.utils.toArray('section').forEach((section, i) => {
+      if (i === 0) return;
 
-      // Handle buttons
-      if (biz === 'cafe') {
-        downloadBtn.classList.remove('hidden');
-        printBtn.classList.remove('hidden');
-      } else {
-        downloadBtn.classList.add('hidden');
-        printBtn.classList.add('hidden');
-      }
-
-      // Lazy-load Café PDF with aesthetic delay for "scanning" feel
-      if (biz === 'cafe') {
-        if (!cafeEmbed.src || cafeEmbed.src === window.location.href || cafeEmbed.src === '') {
-          cafeEmbed.src = '/cafe-menu.pdf';
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 90%",
+        onEnter: () => {
+          gsap.timeline()
+            .to("#displacement-wipe", { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", duration: 0.6, ease: "power2.inOut" })
+            .to("#displacement-wipe", { clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)", duration: 0.8, ease: "power3.inOut" })
+            .set("#displacement-wipe", { clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" });
         }
-
-        // Check for PDF support
-        if (navigator.pdfViewerEnabled === false) {
-          pdfFallback.classList.remove('hidden');
-          cafeEmbed.classList.add('hidden');
-        }
-
-        // Delay to show off the scanning animation
-        setTimeout(() => {
-          contentLoading.classList.add('opacity-0');
-          setTimeout(() => contentLoading.style.display = 'none', 500);
-        }, 2500);
-      } else {
-        // Instant load for placeholders
-        setTimeout(() => {
-          contentLoading.classList.add('opacity-0');
-          setTimeout(() => contentLoading.style.display = 'none', 500);
-        }, 800);
-      }
-
-      viewer.classList.add('open');
-      setTimeout(() => {
-        viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 300);
-    }
-
-    function closeViewer() {
-      viewer.classList.remove('open');
-      allCards.forEach(c => c.classList.remove('active-card'));
-      activeBiz = null;
-    }
-
-    // Portfolio logic
-    function openPortfolio() {
-      portfolioModal.classList.remove('hidden');
-      setTimeout(() => {
-        portfolioModal.classList.add('opacity-100');
-        portfolioModal.classList.remove('opacity-0');
-      }, 10);
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closePortfolio() {
-      portfolioModal.classList.add('opacity-0');
-      portfolioModal.classList.remove('opacity-100');
-      setTimeout(() => {
-        portfolioModal.classList.add('hidden');
-      }, 500);
-      document.body.style.overflow = '';
-    }
-
-    viewPortfolioBtn.addEventListener('click', openPortfolio);
-    closePortfolioBtn.addEventListener('click', closePortfolio);
-
-    allCards.forEach(card => card.addEventListener('click', (e) => {
-      e.preventDefault();
-      openViewer(card.dataset.biz);
-    }));
-
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = link.dataset.target;
-        document.getElementById('businesses').scrollIntoView({ behavior: 'smooth' });
-        setTimeout(() => openViewer(target), 800);
       });
     });
 
-    viewerClose.addEventListener('click', closeViewer);
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        closeViewer();
-        closePortfolio();
-      }
+    // 2. Mouse-Reactive Distortion Hero
+    const heroDistort = document.querySelector('.hero-distort');
+    if (heroDistort) {
+      document.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 40;
+        const y = (e.clientY / window.innerHeight - 0.5) * 40;
+        gsap.to(".hero-title", {
+          x: x * 0.5,
+          y: y * 0.5,
+          rotateY: x * 0.2,
+          rotateX: -y * 0.2,
+          duration: 1,
+          ease: "power2.out"
+        });
+      });
+    }
+
+    // 3. Magnetic & Tilt Refinements
+    const magneticElements = document.querySelectorAll('.luxury-btn, .division-card, .career-card');
+    magneticElements.forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = (e.clientX - rect.left - rect.width / 2) * 0.1;
+        const y = (e.clientY - rect.top - rect.height / 2) * 0.1;
+        gsap.to(btn, { x, y, duration: 0.4, ease: 'power2.out' });
+      });
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.3)' });
+      });
     });
-  </script>
 
-</body>
+    // 4. Scroll Reveal with Distortion
+    gsap.utils.toArray('.scroll-reveal, .division-card').forEach(el => {
+      gsap.from(el, {
+        scrollTrigger: { trigger: el, start: "top 90%" },
+        y: 100,
+        opacity: 0,
+        filter: "blur(20px) url(#liquid-filter)",
+        duration: 2,
+        ease: "expo.out"
+      });
+    });
 
-</html>
+    // 5. Text Scramble Elite
+    const scrambleElements = document.querySelectorAll('.brand-font');
+    scrambleElements.forEach(el => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top 95%",
+        onEnter: () => {
+          if (!el.dataset.scrambled) {
+            if (typeof ScrambleText !== 'undefined') {
+              ScrambleText.scramble(el, el.innerText);
+              el.dataset.scrambled = "true";
+            }
+          }
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}
