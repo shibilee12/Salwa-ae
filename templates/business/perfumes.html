@@ -1,198 +1,327 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Salwa Perfumes | Reality of Scent{% endblock %}
+{% block title %}Salwa Perfumes | Scent of Reality{% endblock %}
 
 {% block extra_css %}
 <style>
   :root {
-    --perfume-gold: #d4af37;
-    --perfume-cream: #fffaf0;
+    --perfume-gold: var(--salwa-gold);
+    --perfume-gold-dim: var(--salwa-gold-dim);
+    --perfume-cream: oklch(0.95 0.02 85);
+    --perfume-black: var(--salwa-black);
   }
 
   body {
-    background-color: var(--perfume-cream);
-    color: #1a1a1a;
+    background-color: var(--perfume-black);
+    color: var(--perfume-cream);
   }
 
   .perfume-hero {
-    min-height: 80vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(rgba(255, 250, 240, 0.8), rgba(255, 250, 240, 0.8)), url('https://images.unsplash.com/photo-1595428774223-ef0c3777c0f1?auto=format&fit=crop&w=1920&q=80');
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
-    text-align: center;
+  }
+
+  /* Vaporous Trail Effect */
+  .vapor-trail {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+    filter: blur(80px);
+  }
+
+  .vapor-sphere {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
+    will-change: transform;
+  }
+
+  .perfume-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 12vw, 8.5rem);
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    line-height: 1;
   }
 
   .gold-accent {
     color: var(--perfume-gold);
+    font-weight: 700;
   }
 
-  .bio-section {
-    background: #fff;
-    padding: 5rem 2rem;
-    border-radius: 40px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
-    margin-top: -100px;
-    position: relative;
-    z-index: 10;
+  .luxury-card {
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(212, 175, 55, 0.1);
+    padding: 4rem 3rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+    backdrop-filter: blur(5px);
   }
 
-  .scent-grid img {
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    filter: grayscale(100%) sepia(20%);
+  .luxury-card:hover {
+    background: rgba(212, 175, 55, 0.03);
+    border-color: var(--perfume-gold);
+    transform: translateY(-20px) scale(1.02);
   }
 
-  .scent-grid img:hover {
-    transform: scale(1.02);
-    filter: grayscale(0%) sepia(0%);
+  .scent-item {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .scent-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.2) brightness(0.8);
+    transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .scent-item:hover img {
+    filter: saturate(1) brightness(1);
+    transform: scale(1.1);
+  }
+
+  .scent-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 10, 10, 0.95), transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2.5rem;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .scent-item:hover .scent-overlay {
+    transform: translateY(0);
+    opacity: 1;
   }
 
   .luxury-button {
-    display: inline-block;
-    padding: 1.2rem 3rem;
-    border: 1px solid var(--perfume-gold);
+    background: transparent;
     color: var(--perfume-gold);
+    border: 1px solid var(--perfume-gold);
+    padding: 1.2rem 3.5rem;
+    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-weight: 700;
-    font-size: 0.75rem;
-    transition: all 0.3s ease;
-    border-radius: 0;
+    letter-spacing: 0.4em;
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .luxury-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: var(--perfume-gold);
+    transform: translate(-50%, -50%) rotate(45deg) translateY(100%);
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: -1;
   }
 
   .luxury-button:hover {
-    background: var(--perfume-gold);
-    color: white;
+    color: var(--perfume-black);
+    letter-spacing: 0.45em;
   }
 
-  @media (max-width: 640px) {
-    .bio-section {
-      padding: 2.5rem 1.25rem;
-      border-radius: 28px;
-      margin-top: -70px;
-    }
-
-    .luxury-button {
-      padding: 1rem 2.25rem;
-    }
+  .luxury-button:hover::before {
+    transform: translate(-50%, -50%) rotate(45deg) translateY(0);
   }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="perfume-hero">
-  <div class="max-w-7xl mx-auto px-6" data-aos="fade-up">
-    <p class="text-xs uppercase tracking-[0.6em] gold-accent mb-4">Division 02</p>
-    <h1 class="text-6xl md:text-8xl font-bold mb-8 brand-font">SALWA<br><span class="gold-accent">PERFUMES</span></h1>
-    <p class="text-xl max-w-2xl mx-auto italic opacity-70">"The reality of a memory is woven through the air you
-      breathe."</p>
+  <div class="vapor-trail">
+    <div class="vapor-sphere" style="width: 40vw; height: 40vw; top: 10%; left: -10%;"></div>
+    <div class="vapor-sphere" style="width: 30vw; height: 30vw; bottom: 20%; right: -5%;"></div>
+  </div>
+
+  <div class="text-center relative z-10 px-6">
+    <div class="mb-16 flex flex-col items-center gap-8">
+      <div class="hero-logo-reveal overflow-hidden">
+        <img src="{% static 'logos/salwaperfumes.jpeg' %}" alt="Salwa Perfumes Logo"
+          class="h-28 w-auto rounded-full shadow-2xl border border-gold/20 hero-logo">
+      </div>
+      <h1 class="perfume-title hero-title">SALWA <span class="gold-accent">PERFUMES</span></h1>
+    </div>
+    <p class="text-xl text-beige/60 max-w-lg mb-8 font-light leading-relaxed">
+      A sanctuary for the human mind. Curating elite stationery, academic essentials, and high-fidelity output.
+    </p>
+    <div class="mb-12">
+      <span class="block refracted-reality text-[0.6rem] tracking-[1em] font-bold uppercase text-white/40"
+        data-text="FEEL THE REALITY">FEEL THE REALITY</span>
+    </div>
+    <a href="#collection" class="luxury-button">Experience collection</a>
   </div>
 </section>
 
-<section class="pb-24 px-6 bg-[#faf9f6]">
-  <div class="max-w-4xl mx-auto bio-section" data-aos="fade-up">
-    <h2 class="text-3xl font-bold mb-10 text-center brand-font">THE <span class="gold-accent">OLFACTORY</span> LEGACY
-    </h2>
-    <div class="prose prose-lg mx-auto text-gray-600 leading-relaxed font-light">
-      <p class="mb-6">Salwa Perfumes represents the pinnacle of Arabian craftsmanship merged with contemporary French
-        sophistication. Each bottle is a curated reality, containing hand-sourced ingredients from the peaks of Taif to
-        the valleys of Grasse.</p>
-      <p>Our philosophy is simple: Scent is not an accessory; it is an atmosphere. It is the invisible architecture that
-        defines a room before a single word is spoken. Experience the reality of our signature blends.</p>
+<section id="collection" class="py-32 bg-[#0a0a0a] relative">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-24 text-center">
+      <p class="text-xs uppercase tracking-[0.6em] text-gold mb-4">Olfactory Intelligence</p>
+      <h2 class="text-5xl font-light brand-font uppercase tracking-widest text-white">THE <span
+          class="gold-accent">GALLERY</span></h2>
     </div>
-    <div class="mt-12 text-center">
-      <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to explore the Salwa Perfume collection.'|urlencode }}"
-        class="luxury-button">Explore Collection</a>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div class="scent-item group">
+        <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80"
+          alt="Scent 01">
+        <div class="scent-overlay">
+          <p class="text-xs text-gold uppercase tracking-[0.4em] mb-4">Elite 01</p>
+          <h3 class="text-3xl font-light uppercase tracking-widest mb-6 text-white">Golden Horizon</h3>
+          <p class="text-sm text-white/40 font-light mb-8">Warm notes of Oudh blended with cosmic amber and solar musk.
+          </p>
+          <a href="#"
+            class="text-[0.6rem] uppercase tracking-[0.3em] text-gold border-b border-gold/30 pb-2 w-max">Acquire
+            Essence</a>
+        </div>
+      </div>
+
+      <div class="scent-item group">
+        <img src="https://images.unsplash.com/photo-1616948055600-a12117dcc4c4?auto=format&fit=crop&w=600&q=80"
+          alt="Scent 02">
+        <div class="scent-overlay">
+          <p class="text-xs text-gold uppercase tracking-[0.4em] mb-4">Elite 02</p>
+          <h3 class="text-3xl font-light uppercase tracking-widest mb-6 text-white">Midnight Veil</h3>
+          <p class="text-sm text-white/40 font-light mb-8">Dark floral synthesis with shadows of Patchouli and white
+            leather.</p>
+          <a href="#"
+            class="text-[0.6rem] uppercase tracking-[0.3em] text-gold border-b border-gold/30 pb-2 w-max">Acquire
+            Essence</a>
+        </div>
+      </div>
+
+      <div class="scent-item group">
+        <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80"
+          alt="Scent 03">
+        <div class="scent-overlay">
+          <p class="text-xs text-gold uppercase tracking-[0.4em] mb-4">Elite 03</p>
+          <h3 class="text-3xl font-light uppercase tracking-widest mb-6 text-white">Neural Rose</h3>
+          <p class="text-sm text-white/40 font-light mb-8">Hyper-realistic Bulgarian rose distilled through digital
+            precision.</p>
+          <a href="#"
+            class="text-[0.6rem] uppercase tracking-[0.3em] text-gold border-b border-gold/30 pb-2 w-max">Acquire
+            Essence</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="py-24 max-w-7xl mx-auto px-6">
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 scent-grid">
-    <div class="space-y-4" data-aos="fade-up">
-      <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=600&q=80"
-        alt="Perfume 1" class="rounded-lg shadow-lg">
-      <h4 class="font-bold text-center">Midnight Oud</h4>
+<section class="py-40 relative overflow-hidden bg-black">
+  <div class="absolute inset-0 bg-gradient-to-bottom from-transparent via-gold/5 to-transparent"></div>
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+    <div class="luxury-card">
+      <div class="w-16 h-16 border border-gold rounded-full flex items-center justify-center mb-10">
+        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" stroke-width="1" />
+          <path d="M12 8v4l3 3" stroke-width="1" />
+        </svg>
+      </div>
+      <h3 class="text-3xl font-light mb-8 uppercase tracking-[0.3em]">Eternal Logistics</h3>
+      <p class="text-cream/40 mb-12 font-light leading-relaxed">Your essence, delivered with total discretion.
+        Nationwide UAE network coverage. Complimentary for orders exceeding 500.</p>
+      <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to order from Salwa Perfumes.'|urlencode }}"
+        class="luxury-button !py-4 !px-12 text-[0.6rem]">Initiate Protocol</a>
     </div>
-    <div class="space-y-4 pt-12" data-aos="fade-up" data-aos-delay="100">
-      <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=600&q=80"
-        alt="Perfume 2" class="rounded-lg shadow-lg">
-      <h4 class="font-bold text-center">Desert Rose</h4>
-    </div>
-    <div class="space-y-4" data-aos="fade-up" data-aos-delay="200">
-      <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80"
-        alt="Perfume 3" class="rounded-lg shadow-lg">
-      <h4 class="font-bold text-center">Silk Route</h4>
-    </div>
-  </div>
-</section>
 
-<section class="py-24 bg-white border-t border-gray-100">
-  <div class="max-w-3xl mx-auto px-6 text-center">
-    <h2 class="text-4xl font-bold mb-8 brand-font">BEYOND <span class="gold-accent">FRAGRANCE</span></h2>
-    <p class="text-gray-500 mb-12">Visit our flagship boutique for a private consultation and personalized scent
-      layering session.</p>
-    <a href="{{ salwa_location_url }}" class="luxury-button">Find Boutique</a>
+    <div class="text-right">
+      <p class="text-xs uppercase tracking-[0.8em] text-gold mb-8">Personalization</p>
+      <h2 class="text-5xl md:text-7xl font-light mb-12 uppercase tracking-tighter leading-tight">BESPOKE<br><span
+          class="text-white/10">SYNTHESIS</span></h2>
+      <p class="text-cream/40 mb-12 text-lg font-light leading-relaxed max-w-md ml-auto">Establish your unique olfactory
+        signature. Our master synthesists calibrate scents to your personal biometric frequency.</p>
+      <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to enquire about bespoke perfume synthesis.'|urlencode }}"
+        class="luxury-button !border-b-2 !border-t-0 !border-l-0 !border-r-0 !px-0 !py-4 hover:tracking-[0.6em]">Consult
+        Master Synthesist</a>
+    </div>
   </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Elite Split Text for Perfumes Hero
-  const perfumeTitle = document.querySelector('.perfume-hero h1');
-  if (perfumeTitle) {
-    const text = perfumeTitle.innerText;
-    perfumeTitle.innerHTML = text.split('').map(char => {
-      if (char === ' ') return '<span>&nbsp;</span>';
-      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
-    }).join('');
+  // Vaporous Hero Reveal
+  const perfHeroTL = gsap.timeline({ delay: 0.5 });
 
-    gsap.from(perfumeTitle.querySelectorAll('.char-inner'), {
-      y: "110%",
-      rotationX: -90,
-      opacity: 0,
-      duration: 1.8,
-      stagger: 0.04,
-      ease: "expo.out",
-      delay: 0.5
-    });
-  }
-
-  gsap.from(".perfume-hero p", {
-    y: 30,
-    opacity: 0,
-    duration: 1.2,
-    delay: 1.2,
-    ease: "expo.out"
-  });
-
-  // Legacy section reveal
-  gsap.from(".bio-section", {
-    scrollTrigger: {
-      trigger: ".bio-section",
-      start: "top 80%"
-    },
+  perfHeroTL.from(".hero-logo", {
     y: 100,
     opacity: 0,
-    duration: 1.5,
+    duration: 2,
     ease: "expo.out"
+  })
+    .from(".hero-title", {
+      letterSpacing: "0.8em",
+      opacity: 0,
+      duration: 2.5,
+      ease: "expo.out"
+    }, "-=1.5")
+    .from(".perfume-hero p", {
+      opacity: 0,
+      y: 20,
+      duration: 1.5,
+      ease: "power3.out"
+    }, "-=1.5")
+    .from(".luxury-button", {
+      y: 40,
+      opacity: 0,
+      duration: 1.2,
+      ease: "power4.out"
+    }, "-=1");
+
+  // Portal Entrance for Vapor Spheres
+  gsap.to(".vapor-sphere", {
+    x: "random(-15, 15)vw",
+    y: "random(-15, 15)vh",
+    scale: "random(0.8, 1.2)",
+    duration: "random(20, 30)",
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut"
   });
 
-  // Scent cards stagger
-  gsap.from(".scent-grid > div", {
-    scrollTrigger: {
-      trigger: ".scent-grid",
-      start: "top 85%"
-    },
-    y: 60,
-    opacity: 0,
-    duration: 1.2,
-    stagger: 0.2,
-    ease: "expo.out"
+  // Luxury Stagger Reveal
+  gsap.utils.toArray('.scent-item, .luxury-card').forEach((el, i) => {
+    gsap.from(el, {
+      scrollTrigger: {
+        trigger: el,
+        start: "top 90%"
+      },
+      clipPath: "inset(100% 0% 0% 0%)",
+      y: 40,
+      opacity: 0,
+      duration: 1.8,
+      ease: "expo.inOut",
+      delay: i * 0.1
+    });
   });
 
 </script>

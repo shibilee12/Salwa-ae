@@ -5,27 +5,33 @@
 
 {% block extra_css %}
 <style>
-  /* Text Reveal Styles */
-  .reveal-text {
+  /* Cinematic Light Sweep Effect */
+  .light-sweep-container {
+    position: relative;
+    display: inline-block;
     overflow: hidden;
-    perspective: 1000px;
   }
 
-  .char {
-    display: inline-block;
-    will-change: transform;
-  }
-
-  /* Magnetic Button Support */
-  .magnetic-btn {
-    display: inline-block;
-    transition: transform 0.1s;
+  .light-sweep-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--sweep-pos, -150%);
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        transparent 100%);
+    transform: skewX(-25deg);
+    pointer-events: none;
+    z-index: 10;
+    will-change: left;
   }
 
   /* Hero Section Overrides */
   .hero-section {
     min-height: 100vh;
-    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,554 +41,464 @@
 
   .hero-bg {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     z-index: -1;
-    filter: brightness(0.4);
+    filter: brightness(0.4) saturate(1.1);
     clip-path: circle(0% at 50% 50%);
+    will-change: transform, clip-path;
+  }
+
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    opacity: 0;
+    transition: opacity 2s ease;
   }
 
   .hero-title {
-    font-size: clamp(5rem, 18vw, 15rem);
-    font-weight: 900;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4.5rem, 15vw, 12rem);
+    font-weight: 300; /* Lighter weight for luxury feel */
     line-height: 0.8;
-    margin-bottom: 2rem;
-    letter-spacing: -0.06em;
+    margin-bottom: 2.5rem;
+    letter-spacing: -0.05em;
     perspective: 2000px;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-    color: transparent;
-    transition: all 0.5s ease;
   }
 
-  .hero-title .kinetic-word span {
-    display: inline-block;
-    color: white;
-    -webkit-text-stroke: 0;
-  }
-
-  /* God-Tier Gradient Text */
   .text-luxury {
-    background: linear-gradient(135deg, #fff 30%, var(--salwa-gold) 100%);
+    font-style: italic;
+    background: linear-gradient(135deg, var(--salwa-white) 30%, var(--salwa-gold) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-
-  /* Liquid Displacement Overlays */
-  .liquid-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 40;
-    background: #000;
-    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
-    pointer-events: none;
-    filter: url(#liquid-filter);
-  }
-
-  /* Glass Slider Effect */
-  .glass-slider {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(40px);
-    z-index: 50;
-    transform: translateX(-100%);
-    pointer-events: none;
-  }
-
-  /* Career Section Styles */
-  .career-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 30px;
-    padding: 3rem;
-    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .career-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.8s ease;
-  }
-
-  .career-card:hover::before {
-    transform: translateX(100%);
-  }
-
-  .career-card:hover {
-    border-color: var(--salwa-gold);
-    transform: translateY(-10px) scale(1.02);
-    background: rgba(255, 255, 255, 0.05);
+    display: inline-block;
   }
 
   .hero-subtitle {
-    font-size: 1.2rem;
-    letter-spacing: 0.5em;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 1em;
     text-transform: uppercase;
-    color: var(--salwa-gold);
-    margin-bottom: 2rem;
+    color: oklch(1 0 0 / 0.3);
+    margin-bottom: 3rem;
+    font-weight: 600;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  /* Asymmetric Division Grid */
+  .divisions-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 2rem;
   }
 
   .division-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 24px;
-    padding: clamp(1.25rem, 4vw, 3.5rem);
-    transition: border-color 0.4s ease;
+    grid-column: span 12;
+    background: oklch(1 0 0 / 0.02);
+    border: 1px solid oklch(1 0 0 / 0.03);
+    border-radius: 4px; /* Move away from heavy rounded corners for "Elite" feel */
+    padding: clamp(2.5rem, 6vw, 4.5rem);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     overflow: hidden;
-    height: auto;
-    min-height: 320px;
+    height: 550px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    will-change: transform, border-color;
+  }
+
+  @media (min-width: 768px) {
+    .division-card:nth-child(1) { grid-column: span 7; height: 650px; }
+    .division-card:nth-child(2) { grid-column: span 5; height: 500px; margin-top: 100px; }
+    .division-card:nth-child(3) { grid-column: span 5; height: 500px; }
+    .division-card:nth-child(4) { grid-column: span 7; height: 650px; margin-top: -150px; }
+    .division-card:nth-child(5) { grid-column: span 12; height: 450px; }
   }
 
   .division-card:hover {
     border-color: var(--salwa-gold);
-  }
-
-  .division-card h3 {
-    font-size: clamp(1.4rem, 3.2vw, 2.2rem);
-    margin-bottom: 1.2rem;
-    font-weight: 600;
-    z-index: 2;
-  }
-
-  .division-card p {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    z-index: 2;
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.03);
   }
 
   .division-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0.12;
+    transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+    transform: scale(1.1);
+    filter: grayscale(1);
+    will-change: transform, opacity;
+  }
+
+  .division-card:hover .division-bg {
+    opacity: 0.3;
+    transform: scale(1);
+    filter: grayscale(0.2);
+  }
+
+  .luxury-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 1.2rem 3rem;
+    border-radius: 99px;
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .luxury-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: -1;
+  }
+
+  .luxury-btn:hover {
+    color: #000;
+    border-color: #fff;
+  }
+
+  .luxury-btn:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .scroll-line-indicator {
+    position: absolute;
+    bottom: 4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+  }
+
+  .scroll-line-inner {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    z-index: 1;
-    opacity: 0.15;
-    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
-    transform: scale(1.1);
-  }
-
-  .division-card:hover .division-bg {
-    opacity: 0.35;
-    transform: scale(1);
-  }
-
-  .scroll-indicator {
-    position: absolute;
-    bottom: 3rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    opacity: 0.6;
-  }
-
-  .luxury-btn {
     background: var(--salwa-gold);
-    color: #000;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 1.2rem 2.5rem;
-    border-radius: 99px;
-    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    transform: translateY(-100%);
+    animation: scroll-indicator 2.5s infinite cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes scroll-indicator {
+    0% {
+      transform: translateY(-100%);
+    }
+
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  .kinetic-word {
+    overflow: hidden;
     display: inline-block;
-    text-align: center;
   }
 
-  .luxury-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
-    filter: brightness(1.1);
+  .kinetic-word span {
+    display: inline-block;
+    transform: translateY(100%);
+    opacity: 0;
+    will-change: transform, opacity;
   }
 
-  .glass {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  @media (max-width: 640px) {
-    .hero-subtitle {
-      letter-spacing: 0.35em;
-      font-size: 0.95rem;
-    }
-
-    .scroll-indicator {
-      bottom: 1.5rem;
-    }
+  .depth-tag {
+    position: absolute;
+    font-size: 0.5rem;
+    color: rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    pointer-events: none;
   }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="liquid-overlay" id="displacement-wipe"></div>
-<div class="glass-slider"></div>
+<section class="hero-section">
+  <div class="depth-tag top-32 left-12" data-speed="0.8">System_Ref: RL-992</div>
+  <div class="depth-tag bottom-12 right-12" data-speed="0.4">Reality_Level: Imperial</div>
 
-<section class="hero-section min-h-screen flex items-center justify-center relative overflow-hidden">
-  <div class="hero-distort absolute inset-0 z-0"></div>
-  <video autoplay muted loop playsinline preload="metadata" class="hero-bg hero-bg-parallax"
-    poster="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80">
+  <video autoplay muted loop playsinline class="hero-video" id="hero-vid">
     <source src="{% static 'videos/hero_bg.mp4' %}" type="video/mp4">
   </video>
-  <!-- God-Tier Fallback Image if Video/Source fails -->
+
   <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80"
-    alt="Salwa Hero Fallback" class="hero-bg hero-bg-parallax" style="z-index: -2">
-  <div class="hero-overlay absolute inset-0 bg-black/50"></div>
+    alt="Salwa Hero Background" class="hero-bg" id="hero-img">
 
-  <div class="hero-content px-4 text-center">
-    <div class="reveal-text mb-6">
-      <p class="hero-subtitle !mb-0 opacity-0 entrance-up tracking-[1em] text-xs">PHASE 03 // BEYOND REALITY</p>
-    </div>
-    <h1 class="hero-title text-white">
-      <span class="block kinetic-word overflow-hidden"><span
-          class="block translate-y-full opacity-0">SALWA</span></span>
-      <span class="block kinetic-word overflow-hidden text-luxury"><span
-          class="block translate-y-full opacity-0">GROUP</span></span>
+  <div class="absolute inset-0 bg-[#050505]/60 z-0"></div>
+
+  <div class="hero-content relative z-10 text-center px-6" data-speed="0.2">
+    <p class="hero-subtitle">Division 00 // Corporate Core</p>
+    <h1 class="hero-title">
+      <div class="kinetic-word"><span>FEEL THE</span></div><br>
+      <div class="kinetic-word light-sweep-container"><span class="text-luxury">REALITY</span></div>
     </h1>
-    <div class="mt-16 opacity-0 entrance-up flex flex-col items-center gap-6" style="transition-delay: 1.2s">
-      <a href="#divisions" class="luxury-btn !px-16 !py-8 !text-sm !tracking-[0.8em]">INITIATE PROTOCOL</a>
-      <div class="flex items-center gap-4 text-[0.6rem] uppercase tracking-[0.4em] opacity-30">
-        <span>Dubai</span>
-        <span class="w-1 h-1 bg-white rounded-full"></span>
-        <span>Abu Dhabi</span>
-        <span class="w-1 h-1 bg-white rounded-full"></span>
-        <span>Global</span>
-      </div>
+    <div class="mt-16 opacity-0 translate-y-8 entrance-item">
+      <a href="#divisions" class="luxury-btn">Enter Ecosystem</a>
+      <p class="text-[0.45rem] mt-10 tracking-[0.8em] text-white/20 uppercase">Dubai • Global Hub • 2026</p>
     </div>
   </div>
 
-  <div class="scroll-indicator animate-bounce">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-    </svg>
+  <div class="scroll-line-indicator">
+    <div class="scroll-line-inner"></div>
   </div>
 </section>
 
-<section id="divisions" class="py-20 sm:py-28 md:py-32 max-w-7xl mx-auto px-4 sm:px-6 relative">
-  <div class="mb-16">
-    <h2 class="text-4xl font-bold mb-4 brand-font">OUR <span style="color: var(--salwa-gold)">DIVISIONS</span></h2>
-    <div class="w-20 h-1 bg-gold"></div>
+<section id="divisions" class="py-40 max-w-[1500px] mx-auto px-8 relative">
+  <div class="mb-32 max-w-2xl scroll-reveal">
+    <span class="text-gold tracking-[0.8em] text-[0.6rem] uppercase mb-6 block" style="color: var(--salwa-gold)">Our
+      Realms</span>
+    <h2 class="text-6xl md:text-8xl font-bold mb-10 brand-font leading-none text-white">THE <span
+        style="color: var(--salwa-gold)">REALMS</span></h2>
+    <p class="text-white/30 text-lg leading-relaxed">A curated ecosystem where intelligence, craftsmanship, and
+      excellence converge to redefine reality.</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    <!-- Salwa Studio -->
-    <a href="{% url 'business' 'studio' %}" class="division-card">
+  <div class="divisions-grid">
+    <a href="{% url 'business' 'studio' %}" class="division-card realm-link">
       <img src="{% static 'logos/salwastudio.jpeg' %}" alt="Salwa Studio" class="division-bg">
-      <div class="division-card-content">
-        <h3 class="brand-font">Salwa Studio</h3>
-        <p>Advanced creative intelligence and design thinking.</p>
+      <div class="relative z-10">
+        <span class="text-[0.6rem] uppercase font-bold tracking-[0.4em] text-white/40 mb-4 block">Creative Division</span>
+        <h3 class="text-5xl font-light text-white mb-6">STUDIO</h3>
+        <p class="text-sm font-light text-white/50 max-w-xs">Engineering digital legacies through advanced design intelligence and creative strategy.</p>
       </div>
     </a>
 
-    <!-- Salwa Cafe -->
-    <a href="{% url 'business' 'cafe' %}" class="division-card">
+    <a href="{% url 'business' 'cafe' %}" class="division-card realm-link">
       <img src="{% static 'logos/salwacafe.jpeg' %}" alt="Salwa Cafe" class="division-bg">
-      <div class="division-card-content">
-        <h3 class="brand-font">Salwa Cafe</h3>
-        <p>A curated sanctuary where luxury gastronomy meets social intelligence.</p>
+      <div class="relative z-10">
+        <span class="text-[0.6rem] uppercase font-bold tracking-[0.4em] text-white/40 mb-4 block">Lifestyle Division</span>
+        <h3 class="text-5xl font-light text-white mb-6">CAFE</h3>
+        <p class="text-sm font-light text-white/50 max-w-xs">A sanctuary where luxury gastronomy meets futuristic social intelligence.</p>
       </div>
     </a>
 
-    <!-- Salwa Bookshop -->
-    <a href="{% url 'business' 'bookshop' %}" class="division-card">
+    <a href="{% url 'business' 'bookshop' %}" class="division-card realm-link">
       <img src="{% static 'logos/salwabookshop.jpeg' %}" alt="Salwa Bookshop" class="division-bg">
-      <div class="division-card-content">
-        <h3 class="brand-font">Salwa Bookshop</h3>
-        <p>A repository of knowledge for the next era. Curating minds.</p>
+      <div class="relative z-10">
+        <span class="text-[0.6rem] uppercase font-bold tracking-[0.4em] text-white/40 mb-4 block">Knowledge Division</span>
+        <h3 class="text-5xl font-light text-white mb-6">BOOKS</h3>
+        <p class="text-sm font-light text-white/50 max-w-xs">Curating a repository of wisdom for the visionaries of the next generation.</p>
       </div>
     </a>
 
-    <!-- Salwa Perfumes -->
-    <a href="{% url 'business' 'perfumes' %}" class="division-card">
-      <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80"
+    <a href="{% url 'business' 'perfumes' %}" class="division-card realm-link">
+      <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1200&q=80"
         alt="Salwa Perfumes" class="division-bg">
-      <div class="division-card-content">
-        <h3 class="brand-font">Salwa Perfumes</h3>
-        <p>Rare olfactory narratives that redefine boundaries.</p>
+      <div class="relative z-10">
+        <span class="text-[0.6rem] uppercase font-bold tracking-[0.4em] text-white/40 mb-4 block">Olfactory Division</span>
+        <h3 class="text-5xl font-light text-white mb-6">PERFUMES</h3>
+        <p class="text-sm font-light text-white/50 max-w-xs">Crafting scented identities from rare essences that define the aura of luxury.</p>
       </div>
     </a>
 
-    <!-- Salwa Electricals -->
-    <a href="{% url 'business' 'electricals' %}" class="division-card">
+    <a href="{% url 'business' 'electricals' %}" class="division-card realm-link">
       <img src="{% static 'logos/salwaelectricals.jpeg' %}" alt="Salwa Electricals" class="division-bg">
-      <div class="division-card-content">
-        <h3 class="brand-font">Salwa Electricals</h3>
-        <p>Intelligent power solutions for an interconnected future.</p>
+      <div class="relative z-10">
+        <span class="text-[0.6rem] uppercase font-bold tracking-[0.4em] text-white/40 mb-4 block">Energy Division</span>
+        <h3 class="text-5xl font-light text-white mb-6">ELECTRICALS</h3>
+        <p class="text-sm font-light text-white/50 max-w-sm">Powering the infrastructure of tomorrow with intelligent electrical solutions and
+          precision engineering.</p>
       </div>
     </a>
   </div>
 </section>
-
-<!-- NEW: Careers Teaser Section -->
-<section class="py-20 sm:py-28 md:py-40 bg-black relative overflow-hidden">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-      <div class="scroll-reveal">
-        <p class="gold tracking-[0.5em] text-xs uppercase mb-4">The Future is Salwa</p>
-        <h2 class="text-5xl md:text-7xl font-bold mb-8 brand-font leading-tight">JOIN THE<br><span
-            style="color: var(--salwa-gold)">EVOLUTION</span></h2>
-        <p class="text-gray-400 text-lg mb-12 leading-relaxed max-w-lg">
-          We don't just hire employees; we recruit visionaries ready to define the future of UAE's creative and
-          industrial landscape.
-        </p>
-        <a href="{% url 'careers' %}" class="luxury-btn !px-16">View Vacancies</a>
-      </div>
-      <div class="grid grid-cols-2 gap-6">
-        <div class="career-card mt-12 hover-tilt">
-          <div class="text-gold text-sm mb-4">01</div>
-          <h4 class="text-xl font-bold mb-2">Creatives</h4>
-          <p class="text-xs text-gray-500">Studios & Design Intelligence</p>
-        </div>
-        <div class="career-card hover-tilt">
-          <div class="text-gold text-sm mb-4">02</div>
-          <h4 class="text-xl font-bold mb-2">Artisans</h4>
-          <p class="text-xs text-gray-500">Culinary & Olfactory Crafts</p>
-        </div>
-        <div class="career-card mt-12 hover-tilt">
-          <div class="text-gold text-sm mb-4">03</div>
-          <h4 class="text-xl font-bold mb-2">Strategists</h4>
-          <p class="text-xs text-gray-500">Operations & Growth</p>
-        </div>
-        <div class="career-card hover-tilt">
-          <div class="text-gold text-sm mb-4">04</div>
-          <h4 class="text-xl font-bold mb-2">Engineers</h4>
-          <p class="text-xs text-gray-500">Infrastructure & Energy</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="py-20 sm:py-28 md:py-32 bg-black/50 backdrop-blur-md relative overflow-hidden border-t border-white/5">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="mb-16">
-      <h2 class="text-4xl font-bold mb-4 brand-font">CURATED <span style="color: var(--salwa-gold)">KNOWLEDGE</span>
-      </h2>
-      <div class="w-20 h-1 bg-gold"></div>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-      <!-- Book 5 -->
-      <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-        <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-          <img src="{% static 'books/jessica-fadel-qXuMWgoga6Q-unsplash.jpg' %}" alt="Minimalism"
-            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-          </div>
-        </div>
-        <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Essence of Luxury</h6>
-        <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">J. Fadel • Curated</p>
-        <a href="{% url 'business' 'bookshop' %}" class="luxury-btn w-full !rounded-xl">Acquire Knowledge</a>
-      </div>
-
-      <!-- Book 6 -->
-      <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-        <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-          <img src="{% static 'books/sincerely-media-CXYPfveiuis-unsplash.jpg' %}" alt="Media Theory"
-            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-          </div>
-        </div>
-        <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Narrative Structures</h6>
-        <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Sincerely Media • Vol 04</p>
-        <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-      </div>
-
-      <!-- Book 7 -->
-      <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-        <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-          <img src="{% static 'books/toa-heftiba-ip9R11FMbV8-unsplash.jpg' %}" alt="Philosophy"
-            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-          </div>
-        </div>
-        <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Beyond the Binary</h6>
-        <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">T. Heftiba • Theory</p>
-        <button class="luxury-btn w-full !rounded-xl">Acquire Knowledge</button>
-      </div>
-
-      <!-- Book 8 -->
-      <div class="glass p-6 rounded-[1.5rem] group hover:border-gold/40 transition-all duration-500">
-        <div class="aspect-[3/4] rounded-[1rem] overflow-hidden mb-6 relative">
-          <img src="{% static 'books/zoe-1nYWu8_s3dE-unsplash.jpg' %}" alt="Photography"
-            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60">
-          </div>
-        </div>
-        <h6 class="brand text-xl mb-1 group-hover:gold transition-colors">Visual Lexicon</h6>
-        <p class="text-gray-500 text-xs uppercase tracking-widest mb-4">Zoe • Masterpiece</p>
-        <a href="{% url 'business' 'bookshop' %}" class="luxury-btn w-full !rounded-xl">Acquire Knowledge</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- RESTORED: Portfolio Modal (Accidentally removed) -->
-<div id="portfolioModal"
-  class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-3xl opacity-0 transition-opacity duration-500 p-2 sm:p-4">
-  <div class="absolute top-4 right-4 flex items-center gap-4 z-[110]">
-    <button type="button" id="closePortfolio"
-      class="viewer-close text-white text-4xl hover:text-gold transition-colors">✕</button>
-  </div>
-  <div class="relative w-full max-w-[95vw] h-[85dvh] rounded-xl overflow-hidden border border-gold/40 shadow-2xl">
-    <img src="{% static 'studio/studio.jpg.jpeg' %}" alt="Portfolio Full" class="w-full h-full object-contain">
-  </div>
-</div>
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Advanced Animation Utilities
-  const ScrambleText = {
-    chars: 'ABCDEFHIJKLMNOPQRSTUVWXYZ1234567890@#$%&',
-    scramble(el, text, duration = 1.5) {
-      let iteration = 0;
-      const interval = setInterval(() => {
-        el.innerText = text.split("").map((letter, index) => {
-          if (index < iteration) return text[index];
-          return this.chars[Math.floor(Math.random() * this.chars.length)];
-        }).join("");
-
-        if (iteration >= text.length) clearInterval(interval);
-        iteration += text.length / (duration * 60);
-      }, 30);
-    }
-  };
-
   document.addEventListener('DOMContentLoaded', () => {
-    // 0. Reality Distortion Entrance (Liquid Wipe)
-    const godTl = gsap.timeline();
+    // Video/Image Fallback Logic
+    const video = document.getElementById('hero-vid');
+    const image = document.getElementById('hero-img');
 
-    // Initial Liquid Wipe
-    godTl.to("#displacement-wipe", {
-      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-      duration: 1.5,
-      ease: "power4.inOut"
+    if (video) {
+      video.oncanplay = () => {
+        gsap.to(video, { opacity: 1, duration: 2 });
+      };
+      video.onerror = () => {
+        console.warn("Hero video failed to load, keeping Unsplash image.");
+        gsap.to(image, { opacity: 1, duration: 0 });
+      };
+    }
+
+    // Automotive Entrance Timeline
+    const tl = gsap.timeline({ delay: 1 });
+
+    tl.to(".hero-bg", {
+      clipPath: "circle(100% at 50% 50%)",
+      duration: 2.2,
+      ease: "expo.inOut"
     })
-      .to("#displacement-wipe", {
-        clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)",
-        duration: 1.5,
-        ease: "power4.inOut"
-      })
-      // Liquid Mask Reveal for Hero BG
-      .to(".hero-bg", {
-        clipPath: "circle(100% at 50% 50%)",
-        duration: 2.5,
-        ease: "expo.inOut"
-      }, "-=1")
-      // Kinetic Typography Stagger
-      .to(".kinetic-word span", {
-        y: 0,
+      .to(".hero-subtitle", {
         opacity: 1,
-        duration: 1.8,
-        stagger: 0.3,
+        y: 0,
+        duration: 1.2,
         ease: "expo.out"
-      }, "-=1.5")
-      .to(".entrance-up", {
+      }, "-=1")
+      .to(".kinetic-word span", {
         y: 0,
         opacity: 1,
         duration: 1.5,
         stagger: 0.2,
         ease: "expo.out"
-      }, "-=1");
+      }, "-=1")
+      .to(".entrance-item", {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: "expo.out"
+      }, "-=0.8");
 
-    // 1. Liquid Transition Shaders (SVG Displacement)
-    gsap.utils.toArray('section').forEach((section, i) => {
-      if (i === 0) return;
-
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top 90%",
-        onEnter: () => {
-          gsap.timeline()
-            .to("#displacement-wipe", { clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)", duration: 0.6, ease: "power2.inOut" })
-            .to("#displacement-wipe", { clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0 100%)", duration: 0.8, ease: "power3.inOut" })
-            .set("#displacement-wipe", { clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)" });
+    // Light Sweep Animation Loop
+    let sweepPos = { val: -150 };
+    function startSweep() {
+      gsap.to(sweepPos, {
+        val: 150,
+        duration: 2,
+        delay: 4,
+        ease: "power3.inOut",
+        onUpdate: () => {
+          document.documentElement.style.setProperty('--sweep-pos', sweepPos.val + '%');
+        },
+        onComplete: () => {
+          sweepPos.val = -150;
+          document.documentElement.style.setProperty('--sweep-pos', '-150%');
+          startSweep();
         }
-      });
-    });
-
-    // 2. Mouse-Reactive Distortion Hero
-    const heroDistort = document.querySelector('.hero-distort');
-    if (heroDistort) {
-      document.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 40;
-        const y = (e.clientY / window.innerHeight - 0.5) * 40;
-        gsap.to(".hero-title", {
-          x: x * 0.5,
-          y: y * 0.5,
-          rotateY: x * 0.2,
-          rotateX: -y * 0.2,
-          duration: 1,
-          ease: "power2.out"
-        });
       });
     }
+    setTimeout(startSweep, 5000);
 
-    // 3. Magnetic & Tilt Refinements
-    const magneticElements = document.querySelectorAll('.luxury-btn, .division-card, .career-card');
-    magneticElements.forEach(btn => {
-      btn.addEventListener('mousemove', (e) => {
-        const rect = btn.getBoundingClientRect();
-        const x = (e.clientX - rect.left - rect.width / 2) * 0.1;
-        const y = (e.clientY - rect.top - rect.height / 2) * 0.1;
-        gsap.to(btn, { x, y, duration: 0.4, ease: 'power2.out' });
-      });
-      btn.addEventListener('mouseleave', () => {
-        gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.3)' });
-      });
-    });
-
-    // 4. Scroll Reveal with Distortion
-    gsap.utils.toArray('.scroll-reveal, .division-card').forEach(el => {
-      gsap.from(el, {
-        scrollTrigger: { trigger: el, start: "top 90%" },
-        y: 100,
+    // Division Stagger Reveals
+    gsap.utils.toArray('.division-card').forEach((card, i) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: "top bottom-=20",
+        },
+        y: 120,
         opacity: 0,
-        filter: "blur(20px) url(#liquid-filter)",
-        duration: 2,
-        ease: "expo.out"
+        scale: 0.95,
+        rotateX: 5,
+        transformOrigin: "center center",
+        duration: 2.2,
+        ease: "power4.out",
+        delay: (i % 3) * 0.15
       });
     });
 
-    // 5. Text Scramble Elite
-    const scrambleElements = document.querySelectorAll('.brand-font');
-    scrambleElements.forEach(el => {
-      ScrollTrigger.create({
-        trigger: el,
-        start: "top 95%",
-        onEnter: () => {
-          if (!el.dataset.scrambled) {
-            if (typeof ScrambleText !== 'undefined') {
-              ScrambleText.scramble(el, el.innerText);
-              el.dataset.scrambled = "true";
-            }
-          }
+    // Division Click Impact Transition
+    document.querySelectorAll('.realm-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+
+        // Zoom impact effect before global preloader kicks in
+        gsap.to(link, { scale: 1.05, filter: 'brightness(1.5)', duration: 0.6, ease: "power4.out" });
+        gsap.to(link.querySelector('.division-bg'), { scale: 1.2, opacity: 1, duration: 0.8, ease: "power4.out" });
+
+        // Call global closeCurtain from base.html if it exists
+        if (typeof closeCurtain === 'function') {
+          closeCurtain(() => {
+            window.location.href = href;
+          });
+        } else {
+          window.location.href = href;
         }
       });
+    });
+
+    // Mouse Interaction for Hero
+    window.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      gsap.to(".hero-title", {
+        x: x * 0.5,
+        y: y * 0.5,
+        rotateY: x * 0.2,
+        rotateX: -y * 0.2,
+        duration: 1.2,
+        ease: "power2.out"
+      });
+      gsap.to(".hero-bg, .hero-video", {
+        x: -x * 0.3,
+        y: -y * 0.3,
+        duration: 2,
+        ease: "power2.out"
+      });
+    });
+
+    // Reveal elements on scroll
+    gsap.utils.toArray('.scroll-reveal').forEach(el => {
+      gsap.from(el, {
+        scrollTrigger: { trigger: el, start: "top 85%" },
+        y: 80,
+        opacity: 0,
+        scale: 0.95,
+        rotateX: 10,
+        transformOrigin: "center top",
+        duration: 2,
+        ease: "power4.out"
+      });
+    });
+
+    // Scroll-Transform Hero Effect
+    gsap.to(".hero-bg, .hero-video", {
+      scale: 1.15,
+      y: "15%",
+      opacity: 0.6,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".hero-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      }
+    });
+
+    gsap.to(".hero-title", {
+      y: 120,
+      scale: 0.85,
+      rotateX: -10,
+      opacity: 0.3,
+      ease: "none",
+      scrollTrigger: {
+        trigger: ".hero-section",
+        start: "top top",
+        end: "bottom top",
+        scrub: true
+      }
     });
   });
 </script>

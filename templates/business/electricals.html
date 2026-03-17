@@ -6,204 +6,335 @@
 {% block extra_css %}
 <style>
   :root {
-    --elec-blue: #007bff;
-    --elec-dark: #0f172a;
+    --elec-blue: oklch(0.6 0.2 250);
+    --elec-dark: oklch(0.12 0.02 250);
+    --elec-glow: oklch(0.6 0.2 250 / 0.4);
   }
 
   body {
     background-color: var(--elec-dark);
-    color: #f8fafc;
+    color: #e0e0e0;
   }
 
   .elec-hero {
-    min-height: 70vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
+    justify-content: center;
     position: relative;
     overflow: hidden;
-    background: radial-gradient(circle at 80% 20%, rgba(0, 123, 255, 0.15), transparent 40%);
+    background: radial-gradient(circle at center, #0a1525 0%, #050a10 100%);
   }
 
-  .tech-border {
-    border: 1px solid rgba(0, 123, 255, 0.2);
-    background: rgba(255, 255, 255, 0.02);
+  /* Circuit Line Background */
+  .circuit-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 123, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 123, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .circuit-pulse {
+    position: absolute;
+    width: 2px;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent, var(--elec-blue), transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .hero-tech-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3.5rem, 12vw, 8.5rem);
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    line-height: 0.8;
+    color: var(--salwa-white);
+    text-shadow: 0 0 30px var(--elec-glow);
+  }
+
+  .elec-glow-text {
+    color: var(--elec-blue);
+    position: relative;
+  }
+
+  .elec-glow-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    filter: blur(8px);
+    opacity: 0.5;
+    z-index: -1;
+  }
+
+  .tech-card {
+    background: rgba(10, 21, 37, 0.6);
+    border: 1px solid rgba(0, 123, 255, 0.1);
+    padding: 3.5rem;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
     backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
-  .tech-border:hover {
+  .tech-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 123, 255, 0.05), transparent);
+    transition: left 0.8s ease;
+  }
+
+  .tech-card:hover::before {
+    left: 100%;
+  }
+
+  .tech-card:hover {
     border-color: var(--elec-blue);
-    box-shadow: 0 0 30px rgba(0, 123, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 123, 255, 0.1);
+    transform: translateY(-10px);
+  }
+
+  .status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 1rem;
+    background: rgba(0, 255, 0, 0.05);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+    border-radius: 99px;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #4ade80;
   }
 
   .status-dot {
-    width: 8px;
-    height: 8px;
-    background: #10b981;
+    width: 6px;
+    height: 6px;
+    background: #4ade80;
     border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-    box-shadow: 0 0 10px #10b981;
+    box-shadow: 0 0 10px #4ade80;
+    animation: blink 2s infinite;
   }
 
-  @media (max-width: 640px) {
-    .tech-border {
-      backdrop-filter: blur(8px);
+  @keyframes blink {
+
+    0%,
+    100% {
+      opacity: 1;
     }
+
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  .blue-button {
+    background: var(--elec-blue);
+    color: white;
+    padding: 1.2rem 3.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    display: inline-block;
+    box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+  }
+
+  .blue-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0, 123, 255, 0.5);
+    letter-spacing: 0.35em;
   }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="elec-hero">
-  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-    <div data-aos="fade-right">
-      <img src="{% static 'logos/salwaelectricals.jpeg' %}" alt="Salwa Electricals Logo"
-        class="h-20 w-auto rounded-lg shadow-2xl mb-8 border border-blue-500/10">
-      <div class="flex items-center mb-6">
-        <span class="status-dot"></span>
-        <span class="text-xs uppercase tracking-[0.3em] text-blue-400">Division 05 / Active</span>
+  <div class="circuit-overlay"></div>
+  <div class="circuit-container absolute inset-0 overflow-hidden pointer-events-none"></div>
+
+  <div class="text-center relative z-10 px-6">
+    <div class="mb-12 flex flex-col items-center gap-8">
+      <div class="hero-logo-portal overflow-hidden">
+        <img src="{% static 'logos/salwaelectricals.jpeg' %}" alt="Salwa Electricals Logo"
+          class="h-24 w-auto rounded-lg shadow-2xl border border-blue-500/20 hero-logo">
       </div>
-      <h1 class="text-6xl md:text-7xl font-bold mb-6 brand-font uppercase">SALWA ELECTRICALS</h1>
-      <p class="text-lg text-slate-400 max-w-lg mb-10">Advanced electrical engineering and smart infrastructure
-        solutions for the next generation.</p>
-      <a href="#services"
-        class="px-10 py-4 bg-blue-600 text-white font-bold rounded-lg uppercase text-xs tracking-widest hover:bg-blue-700 transition inline-block">Explore
-        Solutions</a>
-    </div>
-    <div class="relative" data-aos="fade-left">
-      <div class="tech-border p-8 rounded-2xl">
-        <div class="flex justify-between items-center mb-12">
-          <span class="text-xs font-mono opacity-50">SYSTEM_OS_V2.0</span>
-          <span class="text-xs font-mono text-blue-500">ENERGIZED</span>
-        </div>
-        <div class="space-y-6">
-          <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
-            <span class="text-sm">Grid Stability</span>
-            <span class="text-sm font-mono text-green-400">99.9%</span>
-          </div>
-          <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
-            <span class="text-sm">Smart Integration</span>
-            <span class="text-sm font-mono text-blue-400">ONLINE</span>
-          </div>
-          <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
-            <span class="text-sm">Safety Protocols</span>
-            <span class="text-sm font-mono text-blue-400">ACTIVE</span>
-          </div>
-        </div>
+      <div class="status-indicator">
+        <span class="status-dot"></span> Grid Status: Operational
       </div>
+      <h1 class="hero-tech-title">
+        <span class="block">SALWA</span>
+        <span class="block elec-glow-text" data-text="ELECTRICALS">ELECTRICALS</span>
+      </h1>
     </div>
+    <p class="text-xl max-w-2xl mx-auto mb-16 font-light tracking-wide text-white/50 leading-relaxed uppercase">
+      Engineering the synaptic pathways of modern infrastructure.
+      <span class="block mt-10 refracted-reality text-xs tracking-[0.8em] font-extrabold"
+        data-text="FEEL THE REALITY">FEEL THE REALITY</span>
+    </p>
+    <a href="#solutions" class="blue-button">Initialize Output</a>
   </div>
 </section>
 
-<section id="services" class="py-24 bg-[#0a0f1d]">
+<section id="solutions" class="py-32 relative overflow-hidden">
   <div class="max-w-7xl mx-auto px-6">
-    <h2 class="text-4xl font-bold mb-16 brand-font">CORE <span class="text-blue-500">CAPABILITIES</span></h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="tech-border p-10 rounded-2xl" data-aos="fade-up">
-        <svg class="w-12 h-12 text-blue-500 mb-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
-        <h3 class="text-2xl font-bold mb-4">Phase Mgmt</h3>
-        <p class="text-slate-400 text-sm">Industrial-grade phase balancing and load management for high-demand
-          infrastructures.</p>
+    <div class="mb-24">
+      <p class="text-xs uppercase tracking-[0.5em] text-blue-500 mb-4">Core Systems</p>
+      <h2 class="text-6xl font-black brand-font uppercase text-white leading-none">THE <span class="elec-glow-text"
+          data-text="MATRIX">MATRIX</span></h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+      <div class="tech-card">
+        <div class="text-blue-500 mb-8">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <h3 class="text-3xl font-black mb-6 uppercase tracking-tighter">Power Generation</h3>
+        <p class="text-gray-500 mb-10 leading-relaxed">High-fidelity energy synthesis for commercial and industrial
+          hubs. Stabilizing the grid of tomorrow with absolute precision.</p>
+        <ul class="space-y-4 text-xs uppercase tracking-widest text-blue-400/60 font-bold">
+          <li>System Load: 98.4% Efficiency</li>
+          <li>Latency: 0.02ms</li>
+        </ul>
       </div>
-      <div class="tech-border p-10 rounded-2xl" data-aos="fade-up" data-aos-delay="100">
-        <svg class="w-12 h-12 text-blue-500 mb-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-        </svg>
-        <h3 class="text-2xl font-bold mb-4">Safety Systems</h3>
-        <p class="text-slate-400 text-sm">Advanced surge protection, safety audits, and automated emergency cutoff
-          systems.</p>
-      </div>
-      <div class="tech-border p-10 rounded-2xl" data-aos="fade-up" data-aos-delay="200">
-        <svg class="w-12 h-12 text-blue-500 mb-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-        <h3 class="text-2xl font-bold mb-4">Smart Connect</h3>
-        <p class="text-slate-400 text-sm">End-to-end building automation and IoT integration for intelligent living
-          spaces.</p>
+
+      <div class="tech-card">
+        <div class="text-blue-500 mb-8">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+              d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
+            </path>
+          </svg>
+        </div>
+        <h3 class="text-3xl font-black mb-6 uppercase tracking-tighter">Logic Distribution</h3>
+        <p class="text-gray-500 mb-10 leading-relaxed">Curated electrical architecture and smart-grid integration. We
+          engineer the synapses that enable operational excellence.</p>
+        <ul class="space-y-4 text-xs uppercase tracking-widest text-blue-400/60 font-bold">
+          <li>Nodes Active: 4,096</li>
+          <li>Uptime: 99.9%</li>
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<section class="py-24 bg-blue-600">
-  <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12">
-    <h2 class="text-4xl md:text-5xl font-bold text-white brand-font">READY TO POWER<br>YOUR VISION?</h2>
-    <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to enquire about Salwa Electricals services.'|urlencode }}"
-      class="px-12 py-5 bg-white text-blue-600 font-bold rounded-lg uppercase tracking-widest hover:bg-slate-100 transition shadow-xl">Start
-      Enquiry</a>
+<section class="py-40 bg-black relative border-t border-white/5">
+  <div class="absolute inset-0 bg-blue-500/5 opacity-20 pointer-events-none"></div>
+  <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+    <p class="text-xs uppercase tracking-[0.8em] text-blue-500 mb-8">Direct Access</p>
+    <h2 class="text-5xl md:text-8xl font-black mb-12 uppercase tracking-tighter">ENERGIZE <span
+        class="text-white/10">PROJECT</span></h2>
+    <p class="text-gray-500 mb-12 text-lg font-light leading-relaxed">Establish a high-frequency connection with our
+      engineering collective. Technical consultation and rapid procurement protocols.</p>
+    <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to enquire about electrical services at Salwa Electricals.'|urlencode }}"
+      class="blue-button">Initiate Link</a>
   </div>
-</section>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Initialize AOS if needed (though project uses GSAP mostly)
-  if (typeof AOS !== 'undefined') {
-    AOS.init({
-      duration: 1000,
-      once: true
-    });
-  }
+  // Tech Hero Reveal
+  const elecHeroTL = gsap.timeline({ delay: 0.5 });
 
-  // Elite Split Text for Electricals Hero
-  const techTitle = document.querySelector('.elec-hero h1');
-  if (techTitle) {
-    const text = techTitle.innerText;
-    techTitle.innerHTML = text.split('').map(char => {
-      if (char === ' ') return '<span>&nbsp;</span>';
-      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
-    }).join('');
-
-    gsap.from(techTitle.querySelectorAll('.char-inner'), {
-      y: "110%",
-      rotationX: -90,
-      opacity: 0,
-      duration: 1.8,
-      stagger: 0.04,
-      ease: "expo.out",
-      delay: 0.5
-    });
-  }
-
-  gsap.from(".elec-hero p", {
-    y: 30,
-    opacity: 0,
-    duration: 1.2,
-    delay: 1.2,
-    ease: "expo.out"
-  });
-
-  // Tech Interface Reveal
-  gsap.from(".tech-border", {
-    scrollTrigger: {
-      trigger: ".elec-hero",
-      start: "top center"
-    },
-    scale: 0.95,
+  elecHeroTL.from(".hero-logo", {
+    scale: 0,
+    rotate: 180,
     opacity: 0,
     duration: 1.5,
-    ease: "expo.out",
-    delay: 0.8
-  });
-
-  // Stagger reveal for capability cards
-  gsap.from("#services .tech-border", {
-    scrollTrigger: {
-      trigger: "#services",
-      start: "top 85%"
-    },
-    y: 60,
-    opacity: 0,
-    duration: 1.2,
-    stagger: 0.2,
     ease: "expo.out"
+  })
+    .from(".status-indicator", {
+      y: -20,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out"
+    }, "-=0.5")
+    .from(".hero-tech-title span", {
+      x: -100,
+      opacity: 0,
+      duration: 1.5,
+      stagger: 0.1,
+      ease: "expo.out"
+    }, "-=1")
+    .from(".elec-hero p", {
+      opacity: 0,
+      y: 30,
+      duration: 1.2,
+      ease: "power4.out"
+    }, "-=1")
+    .from(".blue-button", {
+      scale: 0.8,
+      opacity: 0,
+      duration: 1,
+      ease: "back.out(1.7)"
+    }, "-=0.5");
+
+  // Circuit Pulse Animation
+  const container = document.querySelector('.circuit-container');
+  function createPulse() {
+    if (!container) return;
+    const pulse = document.createElement('div');
+    pulse.className = 'circuit-pulse';
+    pulse.style.left = Math.random() * 100 + 'vw';
+    pulse.style.top = Math.random() * 100 + 'vh';
+    container.appendChild(pulse);
+
+    gsap.to(pulse, {
+      opacity: 0.8,
+      y: 100,
+      duration: 1 + Math.random(),
+      ease: "none",
+      onComplete: () => pulse.remove()
+    });
+  }
+  setInterval(createPulse, 300);
+
+  // Tech Stagger Reveal
+  gsap.utils.toArray('.tech-card').forEach((card, i) => {
+    gsap.from(card, {
+      scrollTrigger: {
+        trigger: card,
+        start: "top 90%"
+      },
+      clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+      y: 100,
+      rotateX: -30,
+      opacity: 0,
+      duration: 2,
+      delay: i * 0.2,
+      ease: "expo.out"
+    });
   });
 
+  // Kinetic Typography for "FEEL THE REALITY"
+  const slogan = document.querySelector('.refracted-reality');
+  if (slogan) {
+    gsap.from(slogan, {
+      opacity: 0,
+      scale: 0.9,
+      letterSpacing: "0.2em",
+      duration: 2,
+      ease: "expo.out",
+      scrollTrigger: {
+        trigger: slogan,
+        start: "top 95%"
+      }
+    });
+  }
 </script>
 {% endblock %}

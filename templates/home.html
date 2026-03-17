@@ -1,137 +1,356 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Salwa AE | Enter a New World</title>
+{% extends "base.html" %}
+{% load static %}
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+{% block title %}Salwa AE | Feel the Reality{% endblock %}
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% block extra_css %}
+<style>
+  /* Cinematic Light Sweep Effect */
+  .light-sweep {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+  }
 
-  <!-- AOS -->
-  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  .light-sweep::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%);
+    transform: skewX(-25deg);
+    transition: 0.75s;
+  }
 
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .brand { font-family: 'Playfair Display', serif; }
+  /* Kinetic reveal containers */
+  .kinetic-word {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+  }
 
-    /* immersive hero background */
-    .hero-bg {
-      background-image: url('https://images.unsplash.com/photo-1549880338-65ddcdfd017b?auto=format&fit=crop&w=1920&q=80');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+  .kinetic-word span {
+    display: inline-block;
+    transform: translateY(105%);
+  }
+
+  /* Premium card styles */
+  .division-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    transition: border 0.5s ease;
+  }
+
+  .division-card:hover {
+    border-color: var(--salwa-gold);
+  }
+
+  .division-image {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.4;
+    transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+    filter: grayscale(1);
+  }
+
+  .division-card:hover .division-image {
+    transform: scale(1.1);
+    filter: grayscale(0.5);
+  }
+
+  .division-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .division-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--salwa-gold);
+  }
+
+  /* Scroll progress indicator refinement */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0.6;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--salwa-gold), transparent);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scroll-line::after {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    animation: scroll-anim 2s infinite cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  @keyframes scroll-anim {
+    0% {
+      top: -100%;
     }
 
-    /* animated overlay */
-    .hero-overlay {
-      background: radial-gradient(circle at top, rgba(0,0,0,0.4), rgba(0,0,0,0.9));
-      animation: pulse 10s ease-in-out infinite;
+    100% {
+      top: 100%;
     }
+  }
+</style>
+{% endblock %}
 
-    @keyframes pulse {
-      0%,100% { opacity: 0.85; }
-      50% { opacity: 1; }
-    }
+{% block body_class %}bg-[#050505]{% endblock %}
 
-    /* floating particles */
-    .particle::before {
-      content: '';
-      position: absolute;
-      width: 2px;
-      height: 2px;
-      background: rgba(212,175,55,0.6);
-      animation: float 12s linear infinite;
-    }
+{% block content %}
+<!-- HERO SECTION -->
+<section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 text-center z-10">
+    <div class="mb-6">
+      <span class="text-[0.6rem] uppercase tracking-[1em] text-white/40 block mb-4 hero-subtitle">Salwa Group
+        Ecosystem</span>
+    </div>
 
-    @keyframes float {
-      from { transform: translateY(0); }
-      to { transform: translateY(-120vh); }
-    }
+    <h1 class="brand-font text-6xl md:text-8xl lg:text-9xl mb-8 leading-[0.9] text-white hero-title">
+      <div class="kinetic-word"><span class="reveal-inner">FEEL</span></div>
+      <div class="kinetic-word"><span class="reveal-inner">THE</span></div><br>
+      <div class="kinetic-word text-gold light-sweep"><span class="reveal-inner"
+          style="color: var(--salwa-gold)">REALITY</span></div>
+    </h1>
 
-    .glass {
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(22px);
-      border: 1px solid rgba(255,255,255,0.15);
-    }
+    <p class="text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-12 hero-description">
+      Experience the pinnacle of creative excellence and premium luxury across our diverse business realms.
+    </p>
 
-    .gold { color:#d4af37; }
-  </style>
-</head>
-
-<body class="bg-black text-white overflow-x-hidden">
-
-<!-- NAV -->
-<header class="fixed w-full top-0 z-50 bg-black/30 backdrop-blur">
-  <div class="max-w-7xl mx-auto px-8 py-6 flex justify-between items-center">
-    <h1 class="brand text-2xl">Salwa <span class="gold">AE</span></h1>
-    <nav class="hidden md:flex space-x-10 uppercase tracking-widest text-sm">
-      <a href="#studio" class="hover:text-[#d4af37]">Studio</a>
-      <a href="#perfumes" class="hover:text-[#d4af37]">Perfumes</a>
-      <a href="#cafe" class="hover:text-[#d4af37]">Café</a>
-      <a href="#electricals" class="hover:text-[#d4af37]">Electricals</a>
-      <a href="#bookshop" class="hover:text-[#d4af37]">Bookshop</a>
-    </nav>
+    <div class="hero-actions opacity-0">
+      <a href="#divisions"
+        class="px-12 py-5 border border-white/20 rounded-full hover:border-gold hover:text-gold transition-all duration-500 uppercase tracking-widest text-xs group">
+        Explore Realms
+        <span class="inline-block transform group-hover:translate-x-2 transition-transform duration-300 ml-2">→</span>
+      </a>
+    </div>
   </div>
-</header>
 
-<!-- HERO -->
-<section class="relative min-h-screen hero-bg">
-  <div class="absolute inset-0 hero-overlay"></div>
-
-  <!-- particles -->
-  <div class="absolute inset-0 overflow-hidden">
-    <div class="particle absolute left-1/4 bottom-0"></div>
-    <div class="particle absolute left-1/2 bottom-0"></div>
-    <div class="particle absolute left-3/4 bottom-0"></div>
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator">
+    <span class="text-[0.5rem] uppercase tracking-[0.5em] text-white/20">Scroll to Explore</span>
+    <div class="scroll-line"></div>
   </div>
+</section>
 
-  <div class="relative z-10 min-h-screen flex items-center justify-center text-center px-6" data-aos="zoom-out">
-    <div>
-      <h2 class="brand text-6xl md:text-7xl mb-6 leading-tight">
-        Enter the World of <span class="gold">Salwa</span>
-      </h2>
-      <p class="text-lg text-gray-200 max-w-2xl mx-auto mb-14">
-        A curated universe of premium experiences, creativity, and excellence.
+<!-- DIVISIONS SECTION -->
+<section id="divisions" class="py-40 relative">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+      <div class="max-w-xl">
+        <span class="division-tag mb-4 block">Our Realms</span>
+        <h2 class="brand-font text-5xl md:text-6xl text-white leading-tight divisions-header">
+          A Curated Universe of <span class="text-gold" style="color: var(--salwa-gold)">Excellence</span>
+        </h2>
+      </div>
+      <p class="text-white/40 max-w-xs text-sm leading-relaxed mb-2">
+        Each division is a testament to our commitment to quality, innovation, and the pursuit of perfection.
       </p>
-      <a href="#businesses" class="px-10 py-4 border border-[#d4af37] rounded-full tracking-widest hover:bg-[#d4af37] hover:text-black transition">
-        STEP INSIDE
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <!-- Studio -->
+      <a href="{% url 'business' 'studio' %}"
+        class="division-card group rounded-3xl p-12 aspect-[4/3] flex flex-col justify-end">
+        <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=1200&q=80"
+          class="division-image" alt="Salwa Studio">
+        <div class="relative z-10 translate-y-8 group-hover:translate-y-0 transition-transform duration-700">
+          <span class="division-tag">Creative</span>
+          <h3 class="division-title text-white">Salwa Studio</h3>
+          <p class="mt-4 text-white/0 group-hover:text-white/60 transition-all duration-700 max-w-sm">
+            Where imagination takes form and reality is reshaped through digital artistry.
+          </p>
+        </div>
+      </a>
+
+      <!-- Perfumes -->
+      <a href="{% url 'business' 'perfumes' %}"
+        class="division-card group rounded-3xl p-12 aspect-[4/3] flex flex-col justify-end md:mt-20">
+        <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1200&q=80"
+          class="division-image" alt="Salwa Perfumes">
+        <div class="relative z-10 translate-y-8 group-hover:translate-y-0 transition-transform duration-700">
+          <span class="division-tag">Fragrance</span>
+          <h3 class="division-title text-white">Salwa Perfumes</h3>
+          <p class="mt-4 text-white/0 group-hover:text-white/60 transition-all duration-700 max-w-sm">
+            Scented identities crafted from the finest essences of the world.
+          </p>
+        </div>
+      </a>
+
+      <!-- Cafe -->
+      <a href="{% url 'business' 'cafe' %}"
+        class="division-card group rounded-3xl p-12 aspect-[4/3] flex flex-col justify-end">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80"
+          class="division-image" alt="Salwa Café">
+        <div class="relative z-10 translate-y-8 group-hover:translate-y-0 transition-transform duration-700">
+          <span class="division-tag">Lifestyle</span>
+          <h3 class="division-title text-white">Salwa Café</h3>
+          <p class="mt-4 text-white/0 group-hover:text-white/60 transition-all duration-700 max-w-sm">
+            Moments brewed to perfection in an atmosphere of luxury and comfort.
+          </p>
+        </div>
+      </a>
+
+      <!-- Electricals -->
+      <a href="{% url 'business' 'electricals' %}"
+        class="division-card group rounded-3xl p-12 aspect-[4/3] flex flex-col justify-end md:mt-20">
+        <img src="https://images.unsplash.com/photo-1558484663-8471fb6274e4?auto=format&fit=crop&w=1200&q=80"
+          class="division-image" alt="Salwa Electricals">
+        <div class="relative z-10 translate-y-8 group-hover:translate-y-0 transition-transform duration-700">
+          <span class="division-tag">Infrastructure</span>
+          <h3 class="division-title text-white">Salwa Electricals</h3>
+          <p class="mt-4 text-white/0 group-hover:text-white/60 transition-all duration-700 max-w-sm">
+            Powering modern life with cutting-edge electrical solutions and reliability.
+          </p>
+        </div>
       </a>
     </div>
   </div>
 </section>
 
-<!-- BUSINESSES -->
-<section id="businesses" class="py-40 bg-gradient-to-b from-black to-[#020617]">
-  <div class="max-w-7xl mx-auto px-6">
-    <h3 class="brand text-4xl text-center mb-24" data-aos="fade-up">Our Realms</h3>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-      <a id="studio" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up"> <h4 class="brand text-2xl mb-3">Salwa Studio</h4><p class="text-gray-300">Where imagination takes form</p></a>
-      <a id="perfumes" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up" data-aos-delay="100"> <h4 class="brand text-2xl mb-3">Salwa Perfumes</h4><p class="text-gray-300">Scented identities</p></a>
-      <a id="cafe" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up" data-aos-delay="200"> <h4 class="brand text-2xl mb-3">Salwa Café</h4><p class="text-gray-300">Moments brewed to perfection</p></a>
-      <a id="electricals" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up" data-aos-delay="300"> <h4 class="brand text-2xl mb-3">Salwa Electricals</h4><p class="text-gray-300">Powering modern life</p></a>
-      <a id="bookshop" href="#" class="glass p-10 rounded-3xl hover:scale-105 transition" data-aos="fade-up" data-aos-delay="400"> <h4 class="brand text-2xl mb-3">Salwa Bookshop</h4><p class="text-gray-300">Stories that shape minds</p></a>
+<!-- CALL TO ACTION -->
+<section class="py-40 text-center overflow-hidden">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="cta-reveal">
+      <h2 class="brand-font text-4xl md:text-6xl text-white mb-10">Ready to <span class="text-gold"
+          style="color: var(--salwa-gold)">Join</span> the Evolution?</h2>
+      <p class="text-white/40 mb-12 max-w-xl mx-auto">
+        Whether you're looking for creative partnership or luxury experiences, the Salwa universe is open for you.
+      </p>
+      <a href="{% url 'contact' %}"
+        class="inline-block px-12 py-5 bg-white text-black rounded-full font-bold uppercase tracking-widest text-xs hover:bg-gold transition-colors duration-500">
+        Establish Contact
+      </a>
     </div>
   </div>
 </section>
+{% endblock %}
 
-<!-- FOOTER -->
-<footer class="py-20 text-center text-gray-400">
-  <p class="brand text-xl text-white mb-3">Salwa AE</p>
-  <p>Not just businesses. A universe.</p>
-  <p class="mt-6 text-sm">© 2026 Salwa AE</p>
-</footer>
-
+{% block extra_js %}
 <script>
-  AOS.init({ duration: 1400, once: true });
-</script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Hero Animation Timeline
+    const heroTl = gsap.timeline({
+      delay: 1.5 // Allow preloader to finish
+    });
 
-</body>
-</html>
+    heroTl.to('.hero-subtitle', {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: "expo.out"
+    })
+      .to('.reveal-inner', {
+        y: "0%",
+        duration: 1.5,
+        stagger: 0.1,
+        ease: "expo.out"
+      }, "-=0.8")
+      .to('.hero-description', {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        ease: "expo.out"
+      }, "-=1")
+      .to('.hero-actions', {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "expo.out"
+      }, "-=0.8")
+      .to('.light-sweep', {
+        onStart: () => {
+          const style = document.createElement('style');
+          style.innerHTML = `
+                    .light-sweep::after {
+                        left: 150%;
+                        transition: left 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+                    }
+                `;
+          document.head.appendChild(style);
+        }
+      }, "-=0.5");
+
+    // Scroll-triggered Division Revels
+    gsap.utils.toArray('.division-card').forEach((card, i) => {
+      gsap.from(card, {
+        scrollTrigger: {
+          trigger: card,
+          start: "top bottom-=100",
+          toggleActions: "play none none none"
+        },
+        opacity: 0,
+        y: 100,
+        scale: 0.95,
+        duration: 1.5,
+        ease: "expo.out",
+        delay: i % 2 * 0.2 // Slight staggered feel for pairs
+      });
+    });
+
+    // Header and CTA reveals
+    gsap.from('.divisions-header', {
+      scrollTrigger: {
+        trigger: '.divisions-header',
+        start: "top bottom-=50"
+      },
+      opacity: 0,
+      x: -30,
+      duration: 1.5,
+      ease: "expo.out"
+    });
+
+    gsap.from('.cta-reveal', {
+      scrollTrigger: {
+        trigger: '.cta-reveal',
+        start: "top bottom-=100"
+      },
+      opacity: 0,
+      y: 50,
+      duration: 1.5,
+      ease: "expo.out"
+    });
+
+    // Aurora living universe enhancement
+    // We can add a subtle parallax to the aurora spheres based on scroll
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      gsap.to('.aurora-sphere', {
+        y: scrolled * 0.1,
+        ease: "none",
+        overwrite: 'auto'
+      });
+    });
+  });
+</script>
+{% endblock %}

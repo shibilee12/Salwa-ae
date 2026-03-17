@@ -21,3 +21,22 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
+
+# AI & Tooling
+.gemini/
+.agents/
+.agent/
+_agents/
+_agent/
+brain/
+implementation_plan.md
+task.md
+walkthrough.md
+
+# Debug & Temp
+debug_*.py
+test_view_direct.py
+test_*.txt
+test_report.txt
+screenshots/
+/tmp/

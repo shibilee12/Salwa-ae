@@ -84,6 +84,31 @@ def business_page(request, business):
         context['studio_branches'] = STUDIO_BRANCHES
     return render(request, config['template'], context)
 
+def studio_portfolio(request):
+    """
+    View to display the studio portfolio gallery.
+    Scans static/studio/photos for images and passes their paths to the template.
+    """
+    photo_dir = os.path.join(settings.BASE_DIR, 'static', 'studio', 'photos')
+    photos = []
+    
+    if os.path.exists(photo_dir):
+        # Recursively find all image files
+        for root, dirs, files in os.walk(photo_dir):
+            for file in files:
+                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.webp', '.gif')):
+                    # Use relative path for static template tag
+                    rel_path = os.path.relpath(os.path.join(root, file), os.path.join(settings.BASE_DIR, 'static'))
+                    # Replace backslashes with forward slashes for URL consistency
+                    photos.append(rel_path.replace('\\', '/'))
+    
+    context = {
+        'photos': photos,
+        'business_title': 'Studio Portfolio',
+        'theme': 'studio',
+    }
+    return render(request, 'business/studio_portfolio.html', context)
+
 @xframe_options_exempt
 def serve_cafe_menu(request):
     from django.http import Http404

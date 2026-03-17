@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Salwa Studio | Portfolio Showcase{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --studio-accent: var(--salwa-gold);
+        --portfolio-black: oklch(0.08 0.01 250);
+    }
+
+    .portfolio-hero {
+        background: #000;
+        padding: 10rem 0 5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .portfolio-hero::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(to top, #050505, transparent);
+        z-index: 2;
+    }
+
+    /* Masonry-like Grid */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-auto-rows: 250px;
+        grid-gap: 1.5rem;
+        padding: 2rem 0;
+    }
+
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 4px;
+        background: #111;
+        cursor: pointer;
+        transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(80%) contrast(1.1);
+        transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .gallery-item:hover img {
+        filter: grayscale(0%) contrast(1);
+        transform: scale(1.1);
+    }
+
+    /* Dynamic sizing for a "premium" feel */
+    .gallery-item.tall {
+        grid-row: span 2;
+    }
+
+    .gallery-item.wide {
+        grid-column: span 2;
+    }
+
+    @media (max-width: 768px) {
+        .gallery-item.wide {
+            grid-column: span 1;
+        }
+    }
+
+    .item-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        opacity: 0;
+        display: flex;
+        align-items: flex-end;
+        padding: 1.5rem;
+        transition: opacity 0.4s ease;
+    }
+
+    .gallery-item:hover .item-overlay {
+        opacity: 1;
+    }
+
+    /* Back Button */
+    .back-btn {
+        position: fixed;
+        top: 2rem;
+        left: 2rem;
+        z-index: 100;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.75rem 1.5rem;
+        border-radius: 99px;
+        color: #fff;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        transition: all 0.4s ease;
+    }
+
+    .back-btn:hover {
+        background: var(--studio-accent);
+        color: #000;
+        border-color: var(--studio-accent);
+        transform: translateX(-5px);
+    }
+
+    /* Entrance Animation Classes */
+    .animate-in {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="portfolio-hero">
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <a href="{% url 'business' business='studio' %}" class="back-btn group">
+            ← Back to Studio
+        </a>
+        <p class="text-[0.6rem] uppercase tracking-[0.5em] text-salwa-gold mb-4 opacity-70">Salwa Intelligence Division</p>
+        <h1 class="text-6xl md:text-[8rem] font-light uppercase tracking-tighter mb-8 brand-font">
+            Studio <span class="text-luxury">Portfolio</span>
+        </h1>
+        <div class="h-[1px] w-40 bg-gradient-to-right from-salwa-gold to-transparent mb-12"></div>
+    </div>
+</section>
+
+<section class="bg-[#050505] min-h-screen py-20">
+    <div class="max-w-7xl mx-auto px-6">
+        {% if photos %}
+        <div class="gallery-grid">
+            {% for photo in photos %}
+            <div
+                class="gallery-item animate-in {% if forloop.counter|divisibleby:3 %}tall{% elif forloop.counter|divisibleby:5 %}wide{% endif %}">
+                <img src="{% static photo %}" alt="Salwa Studio Work" loading="lazy">
+                <div class="item-overlay">
+                    <p class="text-xs tracking-widest text-yellow-500 font-bold uppercase">Work // {{
+                        forloop.counter|stringformat:"02d" }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-40">
+            <p class="text-gray-500 uppercase tracking-widest">No work protocols initiated yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Entrance Animations
+    gsap.to(".animate-in", {
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        stagger: 0.1,
+        ease: "expo.out",
+        scrollTrigger: {
+            trigger: ".gallery-grid",
+            start: "top 85%"
+        }
+    });
+
+    // Hero Heading Reveal
+    gsap.from(".portfolio-hero h1", {
+        opacity: 0,
+        x: -50,
+        duration: 1.5,
+        ease: "expo.out"
+    });
+</script>
+{% endblock %}

@@ -6,32 +6,36 @@
 {% block extra_css %}
 <style>
   :root {
-    --studio-accent: #ffcc00;
-    /* Yellow */
-    --studio-red: #cc0000;
+    --studio-accent: var(--salwa-gold);
+    --studio-red: oklch(0.55 0.2 25);
   }
 
+  /* Enhanced Hero with Studio-Specific Canvas */
   .studio-hero {
     background: #000;
-    min-height: 80vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     position: relative;
     overflow: hidden;
   }
 
-  .studio-hero::before {
+  #studio-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .studio-hero::after {
     content: '';
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background-image: url('{% static "studio/studio.jpg.jpeg" %}');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.3;
-    filter: grayscale(100%);
+    height: 40vh;
+    background: linear-gradient(to top, #000, transparent);
+    z-index: 2;
   }
 
   .accent-line {
@@ -39,47 +43,86 @@
     height: 4px;
     background: var(--studio-accent);
     margin-bottom: 2rem;
+    box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
   }
 
+  /* Portal Transition Effect */
   .branch-card {
-    background: #111;
-    border: 1px solid #222;
+    background: #0a0a0a;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     padding: 3rem;
-    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .branch-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, transparent, rgba(255, 204, 0, 0.05), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+  }
+
+  .branch-card:hover::before {
+    transform: translateX(100%);
   }
 
   .branch-card:hover {
     border-color: var(--studio-accent);
-    transform: translateY(-5px);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 204, 0, 0.1);
+  }
+
+  /* Energy Pulse Animation */
+  .energy-pulse {
+    position: relative;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.3em;
+  }
+
+  .energy-pulse::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--studio-accent);
+    opacity: var(--pulse-opacity, 0);
+    filter: blur(12px);
+    z-index: -1;
+    transform: scale(var(--pulse-scale, 1.2));
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
   .service-item {
-    border-left: 2px solid #222;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
     padding-left: 2rem;
-    transition: border-color 0.3s ease;
+    transition: all 0.4s ease;
   }
 
   .service-item:hover {
     border-color: var(--studio-accent);
+    background: linear-gradient(to right, rgba(255, 204, 0, 0.05), transparent);
   }
 
   .portfolio-grid img {
-    filter: grayscale(100%);
-    transition: all 0.5s ease;
+    filter: grayscale(100%) contrast(1.1);
+    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   .portfolio-grid img:hover {
-    filter: grayscale(0%);
-    transform: scale(1.05);
+    filter: grayscale(0%) contrast(1);
+    transform: scale(1.08);
   }
 
   @media (max-width: 640px) {
     .branch-card {
       padding: 1.75rem;
-    }
-
-    .accent-line {
-      width: 44px;
     }
   }
 </style>
@@ -87,75 +130,155 @@
 
 {% block content %}
 <section class="studio-hero">
-  <div class="max-w-7xl mx-auto px-6 relative z-10">
+  <canvas id="studio-canvas"></canvas>
+  <div class="max-w-7xl mx-auto px-6 relative z-10 w-full">
     <div class="accent-line"></div>
-    <div class="mb-8 flex items-center gap-4">
-      <img src="{% static 'logos/salwastudio.jpeg' %}" alt="Salwa Studio Logo"
-        class="h-20 w-auto rounded-lg shadow-2xl border border-white/10">
-      <div>
-        <p class="text-xs uppercase tracking-[0.5em] text-yellow-500 mb-2">Division 01</p>
-        <h1 class="text-6xl md:text-8xl font-bold uppercase">SALWA STUDIO</h1>
-      </div>
+    <div class="mb-4">
+      <p class="text-xs uppercase tracking-[0.5em] text-yellow-500 mb-4 opacity-70">Salwa Intelligence Division</p>
+      <h1 class="text-7xl md:text-[10rem] font-light uppercase leading-tight tracking-tighter">
+        <span class="block text-white/90">SALWA</span>
+        <span class="block text-luxury">STUDIO</span>
+      </h1>
     </div>
-    <p class="text-xl text-gray-400 max-w-xl mb-12">Engineering digital legacies through advanced design intelligence
-      and creative strategy. Black, white, and bold.</p>
-    <a href="#branches"
-      class="px-10 py-4 bg-white text-black font-bold uppercase tracking-widest text-xs hover:bg-yellow-500 transition">Explore
-      Branches</a>
+    <div class="h-[1px] w-full max-w-sm bg-gradient-to-right from-yellow-500 to-transparent mb-10"></div>
+    <p class="text-xl text-gray-400 max-w-xl mb-12 font-light leading-relaxed">
+      Architecting digital realities through high-frequency design intelligence.
+      <span class="block mt-4 energy-pulse text-white font-bold tracking-[0.2em]" data-text="FEEL THE REALITY">FEEL THE
+        REALITY</span>
+    </p>
+    <div class="flex gap-4">
+      <a href="#branches"
+        class="px-10 py-4 bg-white text-black font-bold uppercase tracking-widest text-xs hover:bg-yellow-500 transition-all duration-500 hover:px-12">
+        Launch Matrix
+      </a>
+      <a href="#services"
+        class="px-10 py-4 border border-white/20 text-white font-bold uppercase tracking-widest text-xs hover:border-yellow-500 transition-all duration-500">
+        Protocol 01
+      </a>
+    </div>
   </div>
 </section>
 
-<section id="branches" class="py-24 bg-black">
+<!-- Portfolio Showcase Section -->
+<section class="py-20 bg-black">
   <div class="max-w-7xl mx-auto px-6">
-    <h2 class="text-4xl font-bold mb-16 brand-font">OUR <span class="text-yellow-500">LOCATIONS</span></h2>
+    <a href="{% url 'studio_portfolio' %}"
+      class="group block relative overflow-hidden rounded-xl border border-white/10 aspect-[21/9] md:aspect-[3/1]">
+      <div
+        class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110 opacity-40"
+        style="background-image: url('{% static " studio/studio.jpg.jpeg" %}')"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent"></div>
+
+      <div class="absolute inset-0 p-8 md:p-16 flex flex-col justify-center">
+        <p class="text-xs md:text-sm uppercase tracking-[0.5em] text-yellow-500 mb-2 md:mb-4">Intelligence Archive</p>
+        <h2
+          class="text-4xl md:text-7xl font-black uppercase mb-4 md:mb-8 group-hover:translate-x-4 transition-transform duration-500">
+          Our <span class="text-yellow-500">Portfolio</span>
+        </h2>
+        <div class="flex items-center gap-4">
+          <span
+            class="px-6 py-3 bg-white text-black text-xs font-bold uppercase tracking-widest group-hover:bg-yellow-500 transition-colors">
+            Access Files
+          </span>
+          <span class="w-12 h-px bg-white/20 group-hover:w-24 transition-all group-hover:bg-yellow-500"></span>
+        </div>
+      </div>
+
+      <!-- Decorative corner elements -->
+      <div
+        class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 opacity-0 group-hover:opacity-100 border-yellow-500 transition-all duration-500">
+      </div>
+      <div
+        class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 opacity-0 group-hover:opacity-100 border-yellow-500 transition-all duration-500">
+      </div>
+    </a>
+  </div>
+</section>
+
+<section id="branches" class="py-32 bg-black relative">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-end justify-between mb-20">
+      <div>
+        <p class="text-xs uppercase tracking-[0.5em] text-yellow-500 mb-4">Neural Nodes</p>
+        <h2 class="text-5xl font-bold brand-font uppercase">Global <span class="text-yellow-500">Presence</span></h2>
+      </div>
+      <div class="hidden md:block text-right">
+        <p class="text-[0.6rem] uppercase tracking-widest text-white/30">System Status: Optimal</p>
+        <p class="text-[0.6rem] uppercase tracking-widest text-white/30">Latency: 0.002ms</p>
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
       {% for branch in studio_branches %}
-      <div class="branch-card">
-        <p class="text-yellow-500 font-bold mb-2">0{{ forloop.counter }}</p>
-        <h3 class="text-2xl font-bold mb-4">{{ branch.name }}</h3>
-        <p class="text-gray-500 text-sm mb-8">{{ branch.address }}</p>
+      <div class="branch-card group">
+        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-100 transition-opacity">
+          <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <p class="text-yellow-500 font-mono text-xs mb-4">/NODE_0{{ forloop.counter }}</p>
+        <h3 class="text-2xl font-bold mb-6 group-hover:text-yellow-500 transition-colors">{{ branch.name }}</h3>
+        <p class="text-gray-500 text-sm mb-10 leading-relaxed">{{ branch.address }}</p>
         <a href="{{ branch.enquiry_url }}"
-          class="text-xs uppercase tracking-widest border-b border-yellow-500 pb-1">Enquire Now</a>
+          class="group/link inline-flex items-center gap-2 text-xs uppercase tracking-widest text-yellow-500 font-bold overflow-hidden">
+          Connect
+          <span class="w-0 h-[1px] bg-yellow-500 transition-all group-hover/link:w-8"></span>
+        </a>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
 
-<section class="py-24 bg-[#0a0a0a]">
-  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
+<section id="services" class="py-32 bg-[#050505]">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
     <div>
-      <h2 class="text-4xl font-bold mb-8 brand-font">STUDIO <span class="text-yellow-500">SERVICES</span></h2>
-      <div class="space-y-12">
+      <p class="text-xs uppercase tracking-[0.5em] text-yellow-500 mb-4">Core Protocols</p>
+      <h2 class="text-5xl font-bold mb-16 brand-font uppercase">STUDIO <span class="text-yellow-500">INTELLIGENCE</span>
+      </h2>
+      <div class="space-y-16">
         <div class="service-item">
-          <h4 class="text-xl font-bold mb-2 text-white">Brand Intelligence</h4>
-          <p class="text-gray-500">Comprehensive brand strategy, visual identity systems, and tactical market
-            positioning.</p>
+          <h4 class="text-2xl font-bold mb-4 text-white uppercase tracking-tight">01 // Brand Neural Networks</h4>
+          <p class="text-gray-500 text-lg font-light leading-relaxed">Encoding brand identities into the collective
+            consciousness through multi-dimensional design systems.</p>
         </div>
         <div class="service-item">
-          <h4 class="text-xl font-bold mb-2 text-white">Motion & Digital</h4>
-          <p class="text-gray-500">High-performance digital experiences and complex motion graphics for modern
-            interfaces.</p>
+          <h4 class="text-2xl font-bold mb-4 text-white uppercase tracking-tight">02 // Motion Architecture</h4>
+          <p class="text-gray-500 text-lg font-light leading-relaxed">Synthesizing high-performance digital movement for
+            next-generation interface experiences.</p>
         </div>
         <div class="service-item">
-          <h4 class="text-xl font-bold mb-2 text-white">Creative Direction</h4>
-          <p class="text-gray-500">End-to-end production management, photography, and cinematic storytelling.</p>
+          <h4 class="text-2xl font-bold mb-4 text-white uppercase tracking-tight">03 // Cinematic Strategy</h4>
+          <p class="text-gray-500 text-lg font-light leading-relaxed">Directed creative intelligence that transforms
+            abstract concepts into definitive visual realities.</p>
         </div>
       </div>
     </div>
-    <div class="portfolio-grid grid grid-cols-2 gap-4">
-      <div class="overflow-hidden rounded-lg">
+    <div class="portfolio-grid grid grid-cols-2 gap-6">
+      <div class="overflow-hidden rounded-sm relative group">
+        <div
+          class="absolute inset-0 border-2 border-yellow-500/0 group-hover:border-yellow-500/50 transition-all duration-700 z-10 pointer-events-none">
+        </div>
         <img src="{% static 'studio/studio.jpg.jpeg' %}" alt="" class="w-full h-full object-cover aspect-square">
       </div>
-      <div class="overflow-hidden rounded-lg mt-8">
+      <div class="overflow-hidden rounded-sm mt-12 relative group">
+        <div
+          class="absolute inset-0 border-2 border-yellow-500/0 group-hover:border-yellow-500/50 transition-all duration-700 z-10 pointer-events-none">
+        </div>
         <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt=""
           class="w-full h-full object-cover aspect-square">
       </div>
-      <div class="overflow-hidden rounded-lg -mt-8">
+      <div class="overflow-hidden rounded-sm -mt-12 relative group">
+        <div
+          class="absolute inset-0 border-2 border-yellow-500/0 group-hover:border-yellow-500/50 transition-all duration-700 z-10 pointer-events-none">
+        </div>
         <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=600&q=80" alt=""
           class="w-full h-full object-cover aspect-square">
       </div>
-      <div class="overflow-hidden rounded-lg">
+      <div class="overflow-hidden rounded-sm relative group">
+        <div
+          class="absolute inset-0 border-2 border-yellow-500/0 group-hover:border-yellow-500/50 transition-all duration-700 z-10 pointer-events-none">
+        </div>
         <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=600&q=80" alt=""
           class="w-full h-full object-cover aspect-square">
       </div>
@@ -163,94 +286,196 @@
   </div>
 </section>
 
-<section class="py-24 bg-black border-t border-white/5">
-  <div class="max-w-3xl mx-auto px-6 text-center">
-    <h2 class="text-4xl font-bold mb-8">READY TO CREATE?</h2>
-    <p class="text-gray-400 mb-12">Join the elite list of brands that have transformed their reality through Salwa
-      Studio.</p>
+<section class="py-32 bg-black border-t border-white/5 relative overflow-hidden">
+  <div
+    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-px bg-gradient-to-right from-transparent via-yellow-500/20 to-transparent">
+  </div>
+  <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+    <p class="text-xs uppercase tracking-[0.8em] text-yellow-500 mb-8">Ready for Transition?</p>
+    <h2 class="text-5xl md:text-8xl font-black mb-12 uppercase tracking-tighter">INITIATE <span
+        class="text-white/20">PROJECT</span></h2>
     <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to start a project with Salwa Studio.'|urlencode }}"
-      class="px-12 py-5 bg-yellow-500 text-black font-bold rounded-full uppercase tracking-tighter hover:scale-105 transition duration-300">Start
-      Project</a>
+      class="inline-block px-14 py-6 bg-yellow-500 text-black font-extrabold uppercase tracking-widest hover:scale-110 hover:shadow-[0_0_50px_rgba(255,204,0,0.4)] transition-all duration-500 interactive">
+      Establish Connection
+    </a>
   </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Elite Split Text for Studio Hero
-  const studioTitle = document.querySelector('.studio-hero h1');
-  if (studioTitle) {
-    const text = studioTitle.innerText;
-    studioTitle.innerHTML = text.split('').map(char => {
-      if (char === ' ') return '<span>&nbsp;</span>';
-      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
-    }).join('');
+  // --- Three.js Neural Network System ---
+  const initStudioCanvas = () => {
+    const canvas = document.getElementById('studio-canvas');
+    if (!canvas) return;
 
-    gsap.from(studioTitle.querySelectorAll('.char-inner'), {
-      y: "110%",
-      rotationX: -90,
-      opacity: 0,
-      duration: 1.8,
-      stagger: 0.04,
-      ease: "expo.out",
-      delay: 0.5
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Particles (Neural Nodes)
+    const pointsCount = 150;
+    const posArray = new Float32Array(pointsCount * 3);
+    const velocities = new Float32Array(pointsCount * 3);
+
+    for (let i = 0; i < pointsCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 15;
+      velocities[i] = (Math.random() - 0.5) * 0.02;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 0.08,
+      color: 0xffcc00,
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending
     });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // Connecting Lines Architecture
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.1,
+      blending: THREE.AdditiveBlending
+    });
+
+    camera.position.z = 5;
+
+    let mouseX = 0, mouseY = 0;
+    let targetX = 0, targetY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5);
+      mouseY = (e.clientY / window.innerHeight - 0.5);
+    });
+
+    let frame = 0;
+    const animate = () => {
+      frame++;
+      requestAnimationFrame(animate);
+
+      targetX += (mouseX - targetX) * 0.05;
+      targetY += (mouseY - targetY) * 0.05;
+
+      const positions = particles.geometry.attributes.position.array;
+
+      for (let i = 0; i < pointsCount; i++) {
+        const x = i * 3;
+        const y = i * 3 + 1;
+        const z = i * 3 + 2;
+
+        positions[x] += velocities[x] + (targetX * 0.01);
+        positions[y] += velocities[y] + (-targetY * 0.01);
+
+        // Boundary Check & Scroll Adaptation
+        const scrollSpeed = typeof lenis !== 'undefined' ? lenis.velocity : 0;
+        positions[y] -= scrollSpeed * 0.005;
+
+        if (positions[x] > 8 || positions[x] < -8) velocities[x] *= -1;
+        if (positions[y] > 6 || positions[y] < -6) velocities[y] *= -1;
+      }
+
+      particles.geometry.attributes.position.needsUpdate = true;
+      particles.rotation.y += 0.001;
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  };
+
+  initStudioCanvas();
+
+  // --- Cinematic GSAP Animations ---
+
+  // Hero Slogan Energy Pulse
+  const slogan = document.querySelector('.energy-pulse');
+  if (slogan) {
+    const sloganTimeline = gsap.timeline({ repeat: -1 });
+    sloganTimeline
+      .to(slogan, {
+        '--pulse-opacity': 1,
+        '--pulse-scale': 1.5,
+        textShadow: "0 0 30px rgba(255,204,0,0.9)",
+        duration: 0.1,
+        repeat: 3,
+        yoyo: true
+      })
+      .to(slogan, {
+        '--pulse-opacity': 0.4,
+        '--pulse-scale': 1.2,
+        duration: 1.5,
+        ease: "sine.inOut"
+      })
+      .to({}, { duration: 2 }); // Pause
   }
 
-  gsap.from(".accent-line", {
-    width: 0,
-    duration: 1.2,
-    delay: 0.8,
-    ease: "expo.inOut"
-  });
-
-  gsap.from(".studio-hero p", {
-    y: 30,
+  // Hero Reveal
+  const heroTL = gsap.timeline({ delay: 0.5 });
+  heroTL.from(".studio-hero h1 span", {
+    y: 100,
+    rotateX: -90,
     opacity: 0,
-    duration: 1.2,
-    delay: 1.2,
-    ease: "expo.out"
-  });
-
-  // Stagger reveal for branch cards
-  gsap.from(".branch-card", {
-    scrollTrigger: {
-      trigger: "#branches",
-      start: "top 80%"
-    },
-    y: 60,
-    opacity: 0,
-    duration: 1.2,
-    stagger: 0.15,
-    ease: "expo.out"
-  });
-
-  // Service items reveal
-  gsap.from(".service-item", {
-    scrollTrigger: {
-      trigger: ".service-item",
-      start: "top 85%"
-    },
-    x: -30,
-    opacity: 0,
-    duration: 1,
+    duration: 1.5,
     stagger: 0.2,
-    ease: "power3.out"
-  });
+    ease: "expo.out"
+  })
+    .from(".accent-line", { width: 0, duration: 1, ease: "expo.inOut" }, "-=1")
+    .from(".studio-hero p", { opacity: 0, y: 30, duration: 1.2, ease: "power4.out" }, "-=0.8")
+    .from(".studio-hero a", { opacity: 0, scale: 0.8, duration: 1, stagger: 0.1, ease: "power4.out" }, "-=1");
 
-  // Portfolio images parallax/reveal
-  gsap.utils.toArray('.portfolio-grid div').forEach((imgWrap, i) => {
-    gsap.from(imgWrap, {
+  // Portal Branch Reveal
+  gsap.utils.toArray('.branch-card').forEach((card, i) => {
+    gsap.from(card, {
       scrollTrigger: {
-        trigger: imgWrap,
-        start: "top 90%"
+        trigger: card,
+        start: "top 90%",
       },
-      y: 50,
-      scale: 0.9,
+      clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)",
+      x: -50,
       opacity: 0,
       duration: 1.5,
-      ease: "expo.out",
-      delay: i * 0.1
+      delay: i * 0.1,
+      ease: "expo.inOut"
+    });
+  });
+
+  // Service Items Stagger
+  gsap.from(".service-item", {
+    scrollTrigger: {
+      trigger: "#services",
+      start: "top 70%"
+    },
+    x: -100,
+    opacity: 0,
+    duration: 1.5,
+    stagger: 0.2,
+    ease: "expo.out"
+  });
+
+  // Portfolio Hover Interaction Enhancements
+  document.querySelectorAll('.portfolio-grid div').forEach(wrap => {
+    wrap.addEventListener('mouseenter', () => {
+      const img = wrap.querySelector('img');
+      if (img) gsap.to(img, { scale: 1.15, duration: 1, ease: "power4.out" });
+    });
+    wrap.addEventListener('mouseleave', () => {
+      const img = wrap.querySelector('img');
+      if (img) gsap.to(img, { scale: 1, duration: 1, ease: "power4.out" });
     });
   });
 

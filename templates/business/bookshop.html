@@ -6,298 +6,386 @@
 {% block extra_css %}
 <style>
   :root {
-    --bookshop-green: #00332a;
-    --bookshop-beige: #f5f5dc;
-    --bookshop-gold: #c5a059;
+    --bookshop-green: oklch(0.18 0.03 160);
+    --bookshop-beige: oklch(0.95 0.02 85);
+    --bookshop-gold: var(--salwa-gold);
   }
 
   body {
     background-color: var(--bookshop-green);
     background-image: none;
-    /* Override base background */
     color: var(--bookshop-beige);
   }
 
   .bookshop-hero {
-    min-height: 70vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     position: relative;
-    padding: 4rem 0;
-    border-bottom: 1px solid rgba(245, 245, 220, 0.1);
+    padding: 0;
+    overflow: hidden;
   }
 
   .section-title {
-    font-size: 3rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
     margin-bottom: 2rem;
-    border-bottom: 2px solid var(--bookshop-gold);
+    position: relative;
     display: inline-block;
-    padding-bottom: 0.5rem;
   }
 
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--bookshop-gold);
+    box-shadow: 0 0 15px var(--bookshop-gold);
+  }
+
+  /* Ink Bleed Portal Effect */
   .service-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(245, 245, 220, 0.1);
-    padding: 2.5rem;
-    border-radius: 15px;
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(245, 245, 220, 0.05);
+    padding: 3rem;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(197, 160, 89, 0.08) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .service-card:hover::before {
+    opacity: 1;
   }
 
   .service-card:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.04);
     border-color: var(--bookshop-gold);
-    transform: translateY(-5px);
-  }
-
-  .print-badge {
-    background: var(--bookshop-gold);
-    color: var(--bookshop-green);
-    padding: 0.2rem 0.8rem;
-    border-radius: 99px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-right: 0.5rem;
+    transform: translateY(-10px);
   }
 
   .stationery-item {
     position: relative;
     overflow: hidden;
-    border-radius: 10px;
-    aspect-ratio: 1;
+    aspect-ratio: 4/5;
+    filter: sepia(30%) contrast(1.1);
+    transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .stationery-item:hover {
+    filter: sepia(0%) contrast(1.2);
+    transform: scale(1.02);
   }
 
   .stationery-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   .stationery-item:hover img {
-    transform: scale(1.1);
+    transform: scale(1.1) rotate(1deg);
   }
 
   .stationery-overlay {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 1.5rem;
-    background: linear-gradient(transparent, rgba(0, 51, 42, 0.9));
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(0, 43, 35, 0.9), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
   }
 
-  @media (max-width: 640px) {
-    .bookshop-hero {
-      padding: 2.5rem 0;
-    }
+  .stationery-item:hover .stationery-overlay {
+    opacity: 1;
+  }
 
-    .section-title {
-      font-size: 2.25rem;
-    }
+  .gold-button {
+    background: var(--bookshop-gold);
+    color: var(--bookshop-green);
+    padding: 1.2rem 3rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    display: inline-block;
+  }
 
-    .service-card {
-      padding: 1.6rem;
-    }
+  .gold-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(197, 160, 89, 0.2);
+    letter-spacing: 0.25rem;
   }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="bookshop-hero">
-  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-    <div data-aos="fade-right">
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center w-full">
+    <div class="hero-text-wrap relative z-10">
       <img src="{% static 'logos/salwabookshop.jpeg' %}" alt="Salwa Bookshop Logo"
-        class="h-20 w-auto rounded-lg shadow-2xl mb-8 border border-white/5">
-      <p class="text-xs uppercase tracking-[0.4em] text-[#c5a059] mb-4">Division 03</p>
-      <h1 class="text-6xl md:text-7xl font-bold mb-6 brand-font uppercase">SALWA BOOKSHOP</h1>
-      <p class="text-lg text-gray-300 max-w-lg mb-10">A sanctuary for the mind. We curate premium stationery, academic
-        essentials, and high-precision printing.</p>
-      <div class="flex gap-4">
-        <a href="#printing"
-          class="px-8 py-3 bg-[#c5a059] text-[#00332a] font-bold rounded-full uppercase text-xs tracking-widest hover:scale-105 transition">Printing
-          Services</a>
+        class="h-20 w-auto rounded-lg shadow-2xl mb-12 border border-white/5 hero-logo">
+      <p class="text-xs uppercase tracking-[0.5em] text-[#c5a059] mb-6 opacity-60">Repository 03 // Knowledge Hub</p>
+      <h1 class="text-7xl md:text-9xl font-light mb-8 brand-font uppercase leading-none tracking-tighter">
+        SALWA<br><span class="text-luxury">BOOKSHOP</span>
+      </h1>
+      <p
+        class="text-xl max-w-2xl mx-auto mb-8 font-light tracking-widest text-cream/60 leading-relaxed uppercase italic">
+        Inhale the essence of an alternate dimension.
+      </p>
+      <div class="mb-16">
+        <span class="block refracted-reality text-[0.6rem] tracking-[1em] font-bold uppercase text-white/40"
+          data-text="FEEL THE REALITY">FEEL THE REALITY</span>
+      </div>
+      <div class="flex gap-6">
+        <a href="#printing" class="gold-button text-xs">Access Archives</a>
+        <a href="#stationery"
+          class="px-10 py-5 border border-white/10 text-white font-bold uppercase tracking-widest text-xs hover:border-gold transition-all duration-500">Inventory</a>
       </div>
     </div>
-    <div class="relative" data-aos="fade-left">
+    <div class="hero-image-wrap relative">
+      <div class="absolute inset-0 border-2 border-gold/10 -m-4 rounded-xl -z-10 animate-pulse"></div>
       <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=800&q=80"
-        alt="Library" class="rounded-2xl shadow-2xl opacity-80">
-      <div class="absolute -bottom-6 -right-6 w-48 h-48 border-2 border-[#c5a059] -z-10 rounded-2xl"></div>
+        alt="Library"
+        class="rounded-xl shadow-2xl opacity-90 grayscale hover:grayscale-0 transition-all duration-1000 hero-img">
     </div>
   </div>
 </section>
 
-<section id="stationery" class="py-24 bg-[#002b23]">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="mb-16">
-      <h2 class="section-title brand-font">PREMIUM <span style="color: var(--bookshop-gold)">STATIONERY</span></h2>
-      <p class="text-gray-400">Curated essentials for creative expression and professional excellence.</p>
+<section id="stationery" class="py-32 bg-[#002b23] relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-left from-black/20 to-transparent"></div>
+  <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <div class="mb-20">
+      <p class="text-xs uppercase tracking-[0.5em] text-gold mb-4">The Essentials</p>
+      <h2 class="section-title brand-font text-white uppercase">PREMIUM <span
+          style="color: var(--bookshop-gold)">COLLECTION</span></h2>
     </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="stationery-item" data-aos="zoom-in">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+      <div class="stationery-item group">
         <img src="https://images.unsplash.com/photo-1544816153-12ad58bc9762?auto=format&fit=crop&w=400&q=80"
           alt="Journals">
         <div class="stationery-overlay">
-          <h4 class="font-bold">Fine Journals</h4>
+          <div class="w-full">
+            <h4 class="text-2xl font-bold mb-2">Fine Journals</h4>
+            <p class="text-xs uppercase tracking-widest opacity-60">Tactile Memory</p>
+          </div>
         </div>
       </div>
-      <div class="stationery-item" data-aos="zoom-in" data-aos-delay="100">
+      <div class="stationery-item group">
         <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=400&q=80"
           alt="Writing">
         <div class="stationery-overlay">
-          <h4 class="font-bold">Writing Tools</h4>
+          <div class="w-full">
+            <h4 class="text-2xl font-bold mb-2">Writing Tools</h4>
+            <p class="text-xs uppercase tracking-widest opacity-60">Precision Output</p>
+          </div>
         </div>
       </div>
-      <div class="stationery-item" data-aos="zoom-in" data-aos-delay="200">
+      <div class="stationery-item group">
         <img src="https://images.unsplash.com/photo-1456735190827-d1262f71b8a3?auto=format&fit=crop&w=400&q=80"
           alt="Office">
         <div class="stationery-overlay">
-          <h4 class="font-bold">Office Craft</h4>
+          <div class="w-full">
+            <h4 class="text-2xl font-bold mb-2">Office Craft</h4>
+            <p class="text-xs uppercase tracking-widest opacity-60">Structural Focus</p>
+          </div>
         </div>
       </div>
-      <div class="stationery-item" data-aos="zoom-in" data-aos-delay="300">
+      <div class="stationery-item group">
         <img src="https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?auto=format&fit=crop&w=400&q=80"
           alt="Academic">
         <div class="stationery-overlay">
-          <h4 class="font-bold">Academic Kits</h4>
+          <div class="w-full">
+            <h4 class="text-2xl font-bold mb-2">Academic Kits</h4>
+            <p class="text-xs uppercase tracking-widest opacity-60">Data Synthesis</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="printing" class="py-24">
+<section id="printing" class="py-32 relative">
   <div class="max-w-7xl mx-auto px-6">
-    <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
       <div>
-        <h2 class="section-title brand-font">PRECISION <span style="color: var(--bookshop-gold)">PRINTING</span></h2>
-        <p class="text-gray-400">High-fidelity printing services from architectural blueprints to fine business
-          collateral.</p>
+        <p class="text-xs uppercase tracking-[0.5em] text-gold mb-4">Precision Output</p>
+        <h2 class="section-title brand-font text-white uppercase">HIGH-FIDELITY <span
+            style="color: var(--bookshop-gold)">PRINTING</span></h2>
       </div>
-      <div class="text-right">
-        <p class="text-xs tracking-[0.3em] uppercase opacity-50">Industrial Standards</p>
-        <p class="text-2xl font-bold">A0 — A6 SIZES</p>
+      <div class="text-right hidden md:block">
+        <p class="text-xs tracking-[0.4em] uppercase text-gold/50 mb-2">Standard Protocol</p>
+        <p class="text-4xl font-extrabold tracking-tighter">A0 — A6 MATRIX</p>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="service-card" data-aos="fade-up">
-        <div class="flex items-center mb-6">
-          <span class="print-badge">Academic</span>
-          <h3 class="text-xl font-bold">Document Services</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div class="service-card print-service">
+        <div class="p-6 bg-gold/10 inline-block rounded-full mb-8">
+          <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              stroke-width="1.5" />
+          </svg>
         </div>
-        <ul class="space-y-3 text-sm text-gray-400">
-          <li>• Thesis & Dissertation Binding</li>
-          <li>• High-Volume Photocopying</li>
-          <li>• Spiral & Hardcover Binding</li>
-          <li>• Lamination (up to A3)</li>
+        <h3 class="text-2xl font-bold mb-6 text-white uppercase tracking-tight">Academic Documents</h3>
+        <ul class="space-y-4 text-sm text-beige/50 font-light">
+          <li class="flex items-center gap-2"><span class="w-1 h-1 bg-gold rounded-full"></span> Thesis & Dissertation
+            Binding</li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 bg-gold rounded-full"></span> High-Volume
+            Photocopying</li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 bg-gold rounded-full"></span> Structural Hardcover
+            Binding</li>
         </ul>
       </div>
 
-      <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-        <div class="flex items-center mb-6">
-          <span class="print-badge">Architect</span>
-          <h3 class="text-xl font-bold">Large Format</h3>
+      <div class="service-card print-service">
+        <div class="p-6 bg-gold/10 inline-block rounded-full mb-8">
+          <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M9 17v-2m3 2v-4m3 2v-6m-8-7H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              stroke-width="1.5" />
+          </svg>
         </div>
-        <ul class="space-y-3 text-sm text-gray-400">
-          <li>• A0 - A2 CAD Drawings</li>
-          <li>• Blueprint Printing</li>
-          <li>• High-Res Poster Printing</li>
-          <li>• Indoor Banner Production</li>
+        <h3 class="text-2xl font-bold mb-6 text-white uppercase tracking-tight">Architectural Plotting</h3>
+        <ul class="space-y-4 text-sm text-beige/50 font-light">
+          <li class="flex items-center gap-2"><span class="w-1 h-1 bg-gold rounded-full"></span> A0 - A2 CAD BLUEPRINTS
+          </li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 bg-gold rounded-full"></span> High-Res Technical
+            Plotting</li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 bg-gold rounded-full"></span> Industrial Standard
+            Accuracy</li>
         </ul>
       </div>
 
-      <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-        <div class="flex items-center mb-6">
-          <span class="print-badge">Elite</span>
-          <h3 class="text-xl font-bold">Corporate Print</h3>
+      <div class="service-card print-service">
+        <div class="p-6 bg-gold/10 inline-block rounded-full mb-8">
+          <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z"
+              stroke-width="1.5" />
+          </svg>
         </div>
-        <ul class="space-y-3 text-sm text-gray-400">
-          <li>• Premium Business Cards</li>
-          <li>• Brand Prospectus Layout</li>
-          <li>• Custom Letterheads</li>
-          <li>• Envelope Personalization</li>
+        <h3 class="text-2xl font-bold mb-6 text-white uppercase tracking-tight">Elite Stationery</h3>
+        <ul class="space-y-4 text-sm text-beige/50 font-light">
+          <li class="flex items-center gap-2"><span class="w-1 h-1 bg-gold rounded-full"></span> Premium Business
+            Collateral</li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 bg-gold rounded-full"></span> Custom Brand Prospectus
+          </li>
+          <li class="flex items-center gap-2"><span class="w-1 h-1 bg-gold rounded-full"></span> Luxury Surface
+            Personalization</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<section class="py-24 bg-[#002b23] border-t border-white/5">
-  <div class="max-w-3xl mx-auto px-6 text-center">
-    <h2 class="text-4xl font-bold mb-8">PLACE YOUR ORDER</h2>
-    <p class="text-gray-400 mb-12">Submit your files via WhatsApp for instant processing and door-to-door delivery
-      within the UAE.</p>
+<section class="py-32 bg-[#002b23] border-t border-white/5 relative overflow-hidden">
+  <div
+    class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/black-paper.png')] opacity-20 pointer-events-none">
+  </div>
+  <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+    <p class="text-xs uppercase tracking-[0.8em] text-gold mb-8">Establish Order</p>
+    <h2 class="text-5xl md:text-7xl font-bold mb-12 uppercase tracking-tighter">SUBMIT <span
+        class="text-white/20">RECORDS</span></h2>
+    <p class="text-beige/40 mb-12 text-lg font-light leading-relaxed">Submit your digital assets via the Salwa network
+      for high-fidelity processing and national delivery.</p>
     <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to enquire about printing services at Salwa Bookshop.'|urlencode }}"
-      class="px-12 py-5 bg-[#c5a059] text-[#00332a] font-bold rounded-full uppercase tracking-tighter hover:scale-105 transition duration-300">Quick
-      Enquiry</a>
+      class="gold-button">Connect to Matrix</a>
   </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Elite Split Text for Bookshop Hero
-  const bookshopTitle = document.querySelector('.bookshop-hero h1');
-  if (bookshopTitle) {
-    const text = bookshopTitle.innerText;
-    bookshopTitle.innerHTML = text.split('').map(char => {
-      if (char === ' ') return '<span>&nbsp;</span>';
-      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
-    }).join('');
+  // Dimensional Hero Reveal
+  const bookHeroTL = gsap.timeline({ delay: 0.5 });
 
-    gsap.from(bookshopTitle.querySelectorAll('.char-inner'), {
-      y: "110%",
-      rotationX: -90,
-      opacity: 0,
-      duration: 1.8,
-      stagger: 0.04,
-      ease: "expo.out",
-      delay: 0.5
-    });
-  }
-
-  gsap.from(".bookshop-hero img", {
-    x: 50,
+  bookHeroTL.from(".hero-logo", {
+    scale: 0.8,
     opacity: 0,
     duration: 1.5,
-    delay: 0.8,
     ease: "expo.out"
+  })
+    .from(".bookshop-hero h1", {
+      y: 100,
+      opacity: 0,
+      rotateX: -30,
+      duration: 1.5,
+      ease: "expo.out"
+    }, "-=1")
+    .from(".bookshop-hero p", {
+      y: 30,
+      opacity: 0,
+      duration: 1.2,
+      ease: "power4.out"
+    }, "-=0.8")
+    .from(".hero-img", {
+      x: 50,
+      opacity: 0,
+      duration: 2,
+      scale: 1.1,
+      ease: "expo.out"
+    }, "-=1.5")
+    .from(".gold-button", {
+      scale: 0.8,
+      opacity: 0,
+      duration: 1,
+      ease: "back.out(1.7)"
+    }, "-=1");
+
+  // Portal Cards Reveal
+  gsap.utils.toArray('.service-card').forEach((card, i) => {
+    gsap.from(card, {
+      scrollTrigger: {
+        trigger: card,
+        start: "top 90%"
+      },
+      clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)",
+      x: -30,
+      opacity: 0,
+      duration: 1.5,
+      delay: i * 0.2,
+      ease: "expo.inOut"
+    });
   });
 
-  gsap.from(".bookshop-hero p", {
-    y: 30,
-    opacity: 0,
-    duration: 1.2,
-    delay: 1.2,
-    ease: "expo.out"
-  });
-
-  // Stationery items reveal
+  // Stationery Stagger
   gsap.from(".stationery-item", {
     scrollTrigger: {
       trigger: "#stationery",
       start: "top 80%"
     },
-    scale: 0.9,
+    y: 50,
     opacity: 0,
-    duration: 1.2,
-    stagger: 0.1,
+    stagger: 0.15,
+    duration: 1.5,
     ease: "expo.out"
   });
 
-  // Printing service cards stagger
-  gsap.from(".service-card", {
-    scrollTrigger: {
-      trigger: "#printing",
-      start: "top 85%"
-    },
-    y: 50,
-    opacity: 0,
-    duration: 1.2,
-    stagger: 0.2,
-    ease: "expo.out"
+  // Service Card Mouse Interaction (Ink Bleed feel)
+  document.querySelectorAll('.service-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--x', `${x}%`);
+      card.style.setProperty('--y', `${y}%`);
+    });
   });
 
 </script>

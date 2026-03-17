@@ -6,8 +6,9 @@
 {% block extra_css %}
 <style>
   :root {
-    --cafe-pink: #ff1493;
-    --cafe-black: #0b0b0b;
+    --cafe-pink: oklch(0.65 0.2 330);
+    --cafe-pink-dim: oklch(0.65 0.2 330 / 0.15);
+    --cafe-black: var(--salwa-black);
   }
 
   body {
@@ -16,23 +17,24 @@
   }
 
   .cafe-hero {
-    min-height: 80vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1501339819302-ee44772b347f?auto=format&fit=crop&w=1920&q=80');
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1501339819302-ee44772b347f?auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
   }
 
   .cafe-title {
-    font-size: clamp(3rem, 10vw, 7rem);
-    font-weight: 800;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 12vw, 8.5rem);
+    font-weight: 300;
     text-transform: uppercase;
-    letter-spacing: -0.05em;
-    line-height: 0.9;
+    letter-spacing: -0.02em;
+    line-height: 0.85;
   }
 
   .pink-glow {
@@ -40,43 +42,68 @@
     text-shadow: 0 0 20px rgba(255, 20, 147, 0.5);
   }
 
-  .menu-container {
-    background: #111;
-    border: 1px solid rgba(255, 20, 147, 0.2);
-    border-radius: 30px;
-    overflow: hidden;
-    height: min(820px, 75dvh);
-    position: relative;
-  }
-
+  /* Liquid Hover Effects */
   .delivery-card {
-    background: linear-gradient(135deg, #111, #1a1a1a);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(15, 15, 15, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.03);
     padding: 3rem;
     border-radius: 20px;
     text-align: center;
-    transition: border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .delivery-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 20, 147, 0.1) 0%, transparent 60%);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.6s ease;
+    pointer-events: none;
+  }
+
+  .delivery-card:hover::before {
+    transform: translate(-50%, -50%) scale(1);
   }
 
   .delivery-card:hover {
     border-color: var(--cafe-pink);
+    transform: translateY(-10px) rotateX(5deg);
   }
 
   .pink-button {
     background-color: var(--cafe-pink);
     color: white;
-    padding: 1rem 2.5rem;
+    padding: 1.2rem 3rem;
     border-radius: 99px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: all 0.3s ease;
+    letter-spacing: 0.2em;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
     display: inline-block;
+    box-shadow: 0 10px 30px rgba(255, 20, 147, 0.2);
   }
 
   .pink-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 30px rgba(255, 20, 147, 0.4);
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 15px 40px rgba(255, 20, 147, 0.4);
+    letter-spacing: 0.25em;
+  }
+
+  .menu-container {
+    background: #000;
+    border: 1px solid rgba(255, 20, 147, 0.1);
+    border-radius: 30px;
+    overflow: hidden;
+    height: min(820px, 80dvh);
+    position: relative;
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
   }
 
   @media (max-width: 640px) {
@@ -84,147 +111,156 @@
       border-radius: 22px;
       height: 72dvh;
     }
-
-    .delivery-card {
-      padding: 1.75rem;
-      border-radius: 18px;
-    }
   }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="cafe-hero">
-  <div class="text-center" data-aos="zoom-out" data-aos-duration="1500">
-    <div class="mb-8 flex flex-col items-center gap-6">
-      <img src="{% static 'logos/salwacafe.jpeg' %}" alt="Salwa Cafe Logo"
-        class="h-24 w-auto rounded-full shadow-2xl border-2 border-pink-500/20">
-      <h1 class="cafe-title uppercase">SALWA CAFÉ</h1>
+  <div class="text-center relative z-10">
+    <div class="mb-12 flex flex-col items-center gap-6">
+      <div class="hero-logo-wrap p-1 rounded-full border-2 border-pink-500/20 bg-black/50 backdrop-blur-md">
+        <img src="{% static 'logos/salwacafe.jpeg' %}" alt="Salwa Cafe Logo"
+          class="h-24 w-auto rounded-full shadow-2xl">
+      </div>
+      <h1 class="cafe-title uppercase tracking-tighter">
+        <span class="block">SALWA</span>
+        <span class="block pink-glow">CAFÉ</span>
+      </h1>
     </div>
-    <p class="text-xl max-w-lg mx-auto mb-10 font-light opacity-80">A curated sanctuary where luxury gastronomy meets
-      futuristic social intelligence.</p>
-    <a href="#menu" class="pink-button">View Menu</a>
+    <p class="text-xl max-w-lg mx-auto mb-12 font-light tracking-wide text-white/70 leading-relaxed">
+      A curated sanctuary where luxury gastronomy meets futuristic social intelligence.
+      <span class="block mt-6 refracted-reality text-xs uppercase tracking-[0.5em] font-bold"
+        data-text="FEEL THE REALITY">FEEL THE REALITY</span>
+    </p>
+    <a href="#menu" class="pink-button">Enter Sanctuary</a>
   </div>
 </section>
 
-<section id="menu" class="py-24 max-w-7xl mx-auto px-6">
-  <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+<section id="menu" class="py-32 max-w-7xl mx-auto px-6">
+  <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
     <div>
-      <h2 class="text-5xl font-bold brand-font">THE <span class="pink-glow">MENU</span></h2>
-      <p class="text-gray-400 mt-4">Explore our selection of signature brews and gourmet delicacies.</p>
+      <p class="text-xs uppercase tracking-[0.5em] text-pink-500 mb-4">The Selection</p>
+      <h2 class="text-6xl font-bold brand-font uppercase">DIGITAL <span class="pink-glow">GASTRONOMY</span></h2>
     </div>
     <a href="{% url 'cafe_menu_pdf' %}" download
-      class="text-xs uppercase tracking-widest border-b border-pink-500 pb-1 hover:text-pink-500 transition">Download
-      PDF Menu</a>
+      class="text-xs uppercase tracking-widest border-b border-pink-500 pb-2 hover:text-pink-500 transition-all">Download
+      Protocol</a>
   </div>
 
-  <div class="menu-container shadow-2xl" data-aos="fade-up">
+  <div class="menu-container" id="menu-frame">
     <iframe src="{% url 'cafe_menu_pdf' %}" class="w-full h-full border-none"></iframe>
   </div>
 </section>
 
-<section class="py-24 bg-[#0a0a0a]">
-  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
-    <div class="delivery-card" data-aos="fade-right">
-      <div class="w-20 h-20 bg-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-        <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+<section class="py-32 bg-[#050505] relative overflow-hidden">
+  <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-right from-transparent via-pink-500/20 to-transparent">
+  </div>
+  <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 relative z-10">
+    <div class="delivery-card">
+      <div
+        class="w-16 h-16 bg-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-pink-500/20">
+        <svg class="w-8 h-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
         </svg>
       </div>
-      <h3 class="text-2xl font-bold mb-4">FREE DELIVERY</h3>
-      <p class="text-gray-400 mb-8">Experience Salwa Café at your doorstep. We offer complimentary delivery across major
-        UAE locations for all orders over AED 100.</p>
+      <h3 class="text-2xl font-bold mb-6 uppercase tracking-tight">Rapid Logistics</h3>
+      <p class="text-gray-500 mb-10 leading-relaxed">Experience Salwa Café at your coordinate. Complimentary delivery
+        across the UAE network for orders over 100.</p>
       <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to order from Salwa Cafe.'|urlencode }}"
-        class="pink-button text-xs">Order Now</a>
+        class="pink-button !py-4 !px-10 text-xs">Initiate Order</a>
     </div>
 
-    <div class="delivery-card" data-aos="fade-left">
-      <div class="w-20 h-20 bg-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-        <svg class="w-10 h-10 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+    <div class="delivery-card">
+      <div
+        class="w-16 h-16 bg-pink-500/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-pink-500/20">
+        <svg class="w-8 h-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
             d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
           </path>
         </svg>
       </div>
-      <h3 class="text-2xl font-bold mb-4">GOOGLE REVIEWS</h3>
-      <p class="text-gray-400 mb-8">Join thousands of satisfied guests who have experienced our sanctuary. Rated 4.8/5
-        by the community.</p>
-      <a href="#" class="text-xs uppercase tracking-widest border-b border-pink-500 pb-1">View on Google Maps</a>
+      <h3 class="text-2xl font-bold mb-6 uppercase tracking-tight">Network Intelligence</h3>
+      <p class="text-gray-500 mb-10 leading-relaxed">Join the curated collective of satisfied guests who inhabit our
+        sanctuary. Verified community rating: 4.8/5.</p>
+      <a href="#" class="text-xs uppercase tracking-[0.2em] font-bold text-pink-500 hover:opacity-80 transition">Locate
+        via Maps</a>
     </div>
   </div>
 </section>
 
-<section class="py-24 bg-black border-t border-white/5">
+<section class="py-32 bg-black border-t border-white/5 relative">
   <div class="max-w-3xl mx-auto px-6 text-center">
-    <h2 class="text-4xl font-bold mb-8">PRIVATE EVENTS</h2>
-    <p class="text-gray-400 mb-12">Host your next corporate meeting or intimate gathering in our high-tech sanctuary. We
-      offer bespoke catering and seamless connectivity.</p>
+    <p class="text-xs uppercase tracking-[0.8em] text-pink-500 mb-8">Exclusive Access</p>
+    <h2 class="text-5xl md:text-7xl font-bold mb-12 uppercase tracking-tighter">PRIVATE <span
+        class="text-white/20">SESSIONS</span></h2>
+    <p class="text-gray-400 mb-12 text-lg font-light leading-relaxed">Host your next high-frequency social intelligence
+      gathering in our cinematic sanctuary. Bespoke catering and total connectivity.</p>
     <a href="{{ salwa_whatsapp_base }}?text={{ 'Hi, I would like to enquire about private events at Salwa Cafe.'|urlencode }}"
-      class="px-12 py-5 border-2 border-pink-500 text-pink-500 font-bold rounded-full uppercase tracking-tighter hover:bg-pink-500 hover:text-white transition duration-300">Book
-      Venue</a>
+      class="inline-block px-14 py-6 border-2 border-pink-500 text-pink-500 font-extrabold uppercase tracking-widest hover:bg-pink-500 hover:text-white transition-all duration-500">
+      Establish Presence
+    </a>
   </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  // Elite Split Text for Cafe Hero
-  const cafeTitle = document.querySelector('.cafe-title');
-  if (cafeTitle) {
-    const text = cafeTitle.innerText;
-    cafeTitle.innerHTML = text.split('').map(char => {
-      if (char === ' ') return '<span>&nbsp;</span>';
-      return `<span class="char-wrap" style="display:inline-block; overflow:hidden;"><span class="char-inner" style="display:inline-block;">${char}</span></span>`;
-    }).join('');
+  // Cinematic Hero Reveal
+  const cafeHeroTL = gsap.timeline({ delay: 0.5 });
 
-    gsap.from(cafeTitle.querySelectorAll('.char-inner'), {
-      y: "110%",
-      rotationX: -90,
-      opacity: 0,
-      duration: 1.8,
-      stagger: 0.03,
-      ease: "expo.out",
-      delay: 0.5
-    });
-  }
-
-  gsap.from(".cafe-hero p", {
-    y: 30,
-    opacity: 0,
-    duration: 1.2,
-    delay: 1.2,
-    ease: "expo.out"
-  });
-
-  gsap.from(".pink-button", {
+  cafeHeroTL.from(".cafe-hero .hero-logo-wrap", {
     scale: 0.8,
     opacity: 0,
-    duration: 1,
-    delay: 1.5,
-    ease: "back.out(1.7)"
-  });
-
-  // Stagger reveal for delivery cards
-  gsap.from(".delivery-card", {
-    scrollTrigger: {
-      trigger: ".delivery-card",
-      start: "top 85%"
-    },
-    y: 60,
-    opacity: 0,
-    duration: 1.2,
-    stagger: 0.2,
+    duration: 1.5,
     ease: "expo.out"
+  })
+    .from(".cafe-title span", {
+      y: 100,
+      rotateX: -90,
+      opacity: 0,
+      duration: 1.5,
+      stagger: 0.2,
+      ease: "expo.out"
+    }, "-=1")
+    .from(".cafe-hero p", {
+      opacity: 0,
+      y: 30,
+      duration: 1.2,
+      ease: "power4.out"
+    }, "-=0.8")
+    .from(".cafe-hero .pink-button", {
+      scale: 0.8,
+      opacity: 0,
+      duration: 1,
+      ease: "back.out(1.7)"
+    }, "-=0.5");
+
+  // Portal Delivery Reveal
+  gsap.utils.toArray('.delivery-card').forEach((card, i) => {
+    gsap.from(card, {
+      scrollTrigger: {
+        trigger: card,
+        start: "top 90%"
+      },
+      clipPath: "polygon(0 0, 100% 0, 100% 0, 0 0)",
+      y: 50,
+      opacity: 0,
+      duration: 1.5,
+      delay: i * 0.2,
+      ease: "expo.inOut"
+    });
   });
 
-  // Menu section appearance
-  gsap.from(".menu-container", {
+  // Menu Sanctuary Reveal
+  gsap.from("#menu-frame", {
     scrollTrigger: {
-      trigger: ".menu-container",
+      trigger: "#menu-frame",
       start: "top 80%"
     },
     clipPath: "inset(0% 0% 100% 0%)",
+    filter: "blur(20px)",
     duration: 2,
     ease: "expo.inOut"
   });
